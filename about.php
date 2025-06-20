@@ -7,7 +7,7 @@ include_once 'includes/header.php';
 <div class="bg-light py-5 mb-4">
     <div class="container">
         <h1 class="text-center">About Us</h1>
-        <p class="text-center lead">Learn more about Laundry Management System</p>
+        <p class="text-center lead">Learn more about Dry Drop</p>
     </div>
 </div>
 
@@ -16,12 +16,12 @@ include_once 'includes/header.php';
     <div class="row">
         <div class="col-lg-6">
             <h2>Our Story</h2>
-            <p>Laundry Management System was founded in 2020 with a simple mission: to make laundry hassle-free for busy people. What started as a small local service has grown into a comprehensive laundry solution serving thousands of customers.</p>
+            <p>Dry Drop was founded in 2020 with a simple mission: to make laundry hassle-free for busy people. What started as a small local service has grown into a comprehensive laundry solution serving thousands of customers.</p>
             <p>Our journey began when our founder, tired of spending weekends doing laundry, realized there had to be a better way. By combining technology with traditional laundry services, we've created a seamless experience that saves our customers time and effort.</p>
             <p>Today, we're proud to be the leading laundry service provider in the region, known for our quality, reliability, and customer-focused approach.</p>
         </div>
         <div class="col-lg-6">
-            <img src="assets/images/about-us.jpg" alt="About Laundry Management System" class="img-fluid rounded shadow">
+            <img src="assets/images/about-us.jpg" alt="About Dry Drop" class="img-fluid rounded shadow">
         </div>
     </div>
     

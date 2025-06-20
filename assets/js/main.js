@@ -1,4 +1,4 @@
-// Main JavaScript file for the Laundry Management System
+// Main JavaScript file for the Dry Drop
 
 document.addEventListener('DOMContentLoaded', function() {
     // Initialize tooltips

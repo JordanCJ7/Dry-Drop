@@ -27,7 +27,7 @@ $services = [];
 if (isset($_GET['service_id'])) {
     // Single service
     $service_id = $_GET['service_id'];
-    $sql = "SELECT * FROM services WHERE id = ? AND is_active = 1";
+    $sql = "SELECT * FROM services WHERE id = ? AND active = 1";
     $stmt = $conn->prepare($sql);
     $stmt->bind_param("i", $service_id);
     $stmt->execute();
@@ -41,13 +41,12 @@ if (isset($_GET['service_id'])) {
     $package = $_GET['package'];
     
     if ($package == 'weekly') {
-        $sql = "SELECT * FROM services WHERE is_active = 1 LIMIT 3";
-    } elseif ($package == 'monthly') {
-        $sql = "SELECT * FROM services WHERE is_active = 1";
+        $sql = "SELECT * FROM services WHERE active = 1 LIMIT 3";    } elseif ($package == 'monthly') {
+        $sql = "SELECT * FROM services WHERE active = 1";
     } elseif ($package == 'family') {
-        $sql = "SELECT * FROM services WHERE is_active = 1 LIMIT 4";
+        $sql = "SELECT * FROM services WHERE active = 1 LIMIT 4";
     } else {
-        $sql = "SELECT * FROM services WHERE is_active = 1";
+        $sql = "SELECT * FROM services WHERE active = 1";
     }
     
     $result = $conn->query($sql);
@@ -59,7 +58,7 @@ if (isset($_GET['service_id'])) {
     }
 } else {
     // All services
-    $sql = "SELECT * FROM services WHERE is_active = 1";
+    $sql = "SELECT * FROM services WHERE active = 1";
     $result = $conn->query($sql);
     
     if ($result->num_rows > 0) {

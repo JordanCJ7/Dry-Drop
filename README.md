@@ -1,4 +1,4 @@
-# Laundry Management System (LMS)
+# Dry Drop
 
 A comprehensive web application for managing laundry services, built with PHP, MySQL, HTML5, CSS3, and JavaScript.
 
@@ -19,7 +19,7 @@ A comprehensive web application for managing laundry services, built with PHP, M
 ## Installation
 
 1. **Database Setup**:
-   - Create a MySQL database named 'laundry_management'
+   - Create a MySQL database named 'drydrop'
    - The database tables will be automatically created when you first access the application
 
 2. **Server Requirements**:
@@ -34,13 +34,13 @@ A comprehensive web application for managing laundry services, built with PHP, M
 
 ## Default Admin Account
 
-- Email: admin@laundry.com
+- Email: admin@drydrop.com
 - Password: admin123
 
 ## Project Structure
 
 ```
-LMS/
+Dry Drop/
 ├── admin/                  # Admin dashboard and management pages
 │   ├── includes/           # Admin-specific components
 │   ├── index.php           # Admin dashboard
@@ -109,4 +109,4 @@ This project is open-source and available for personal and commercial use.
 
 ## Support
 
-For any questions or issues, please contact support@laundryms.com
+For any questions or issues, please contact support@drydrop.com

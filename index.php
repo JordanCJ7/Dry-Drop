@@ -3,7 +3,7 @@ $page_title = "Home";
 include_once 'includes/header.php';
 
 // Fetch services for the homepage
-$sql = "SELECT * FROM services WHERE is_active = 1 LIMIT 3";
+$sql = "SELECT * FROM services WHERE active = 1 LIMIT 3";
 $result = $conn->query($sql);
 $services = [];
 
@@ -17,7 +17,7 @@ if ($result->num_rows > 0) {
 <!-- Hero Section -->
 <section class="hero">
     <div class="container">
-        <h1>Welcome to Laundry Management System</h1>
+        <h1>Welcome to Dry Drop</h1>
         <p>Your one-stop solution for all laundry needs. We offer professional washing, dry cleaning, and ironing services at affordable prices.</p>
         <a href="services.php" class="btn btn-primary btn-lg">View Our Services</a>
     </div>

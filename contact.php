@@ -103,7 +103,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contact_submit'])) {
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-envelope text-primary me-2"></i> Email</h5>
-                    <p class="card-text">info@laundryms.com<br>support@laundryms.com</p>
+                    <p class="card-text">info@drydrop.com<br>support@drydrop.com</p>
                 </div>
             </div>
             

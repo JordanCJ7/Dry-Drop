@@ -193,7 +193,7 @@ while ($order = $recent_orders_result->fetch_assoc()) {
         <div class="row">
             <?php
             // Fetch services for quick access
-            $services_sql = "SELECT * FROM services WHERE is_active = 1 LIMIT 3";
+            $services_sql = "SELECT * FROM services WHERE active = 1 LIMIT 3";
             $services_result = $conn->query($services_sql);
             
             if ($services_result->num_rows > 0) {
