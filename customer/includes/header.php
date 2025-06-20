@@ -26,7 +26,7 @@ $user = $user_result->fetch_assoc();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>Customer Dashboard | LMS</title>
+    <title><?php echo isset($page_title) ? $page_title . ' - ' : ''; ?>Customer Dashboard | Dry Drop</title>
     <!-- Bootstrap 5 CSS -->
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
@@ -40,7 +40,7 @@ $user = $user_result->fetch_assoc();
         <!-- Sidebar -->
         <div class="bg-light border-right" id="sidebar-wrapper">
             <div class="sidebar-heading bg-primary text-white py-4 fs-4 fw-bold text-uppercase">
-                <i class="fas fa-tshirt me-2"></i>LMS
+                <i class="fas fa-tshirt me-2"></i>Dry Drop
             </div>
             <div class="list-group list-group-flush">
                 <a href="index.php" class="list-group-item list-group-item-action <?php echo basename($_SERVER['PHP_SELF']) == 'index.php' ? 'active' : ''; ?>">
