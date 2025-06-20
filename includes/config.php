@@ -3,7 +3,7 @@
 define('DB_HOST', 'localhost');
 define('DB_USER', 'root');
 define('DB_PASS', '');
-define('DB_NAME', 'laundry_management');
+define('DB_NAME', 'drydrop');
 
 // Create database connection
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS);
@@ -146,7 +146,7 @@ $adminCount = $adminCheck->fetch_assoc()['count'];
 
 if ($adminCount == 0) {
     $password = password_hash("admin123", PASSWORD_DEFAULT);
-    $sql = "INSERT INTO users (name, email, password, phone, user_role) VALUES ('Admin User', 'admin@laundry.com', '$password', '1234567890', 'admin')";
+    $sql = "INSERT INTO users (name, email, password, phone, user_role) VALUES ('Admin User', 'admin@drydrop.com', '$password', '1234567890', 'admin')";
     $conn->query($sql);
 }
 
