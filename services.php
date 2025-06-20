@@ -3,7 +3,7 @@ $page_title = "Our Services";
 include_once 'includes/header.php';
 
 // Fetch all active services
-$sql = "SELECT * FROM services WHERE is_active = 1";
+$sql = "SELECT * FROM services WHERE active = 1";
 $result = $conn->query($sql);
 $services = [];
 
