@@ -4,7 +4,7 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-4">
-                    <h5>Laundry Management System</h5>
+                    <h5>Dry Drop</h5>
                     <p>Your one-stop solution for all laundry services.</p>
                 </div>
                 <div class="col-md-4">
@@ -21,13 +21,13 @@
                     <address>
                         <p><i class="fas fa-map-marker-alt me-2"></i> 123 Laundry Street, City</p>
                         <p><i class="fas fa-phone me-2"></i> +1 234 567 8900</p>
-                        <p><i class="fas fa-envelope me-2"></i> info@laundryms.com</p>
+                        <p><i class="fas fa-envelope me-2"></i> info@drydrop.com</p>
                     </address>
                 </div>
             </div>
             <hr>
             <div class="text-center">
-                <p>&copy; <?php echo date('Y'); ?> Laundry Management System. All rights reserved.</p>
+                <p>&copy; <?php echo date('Y'); ?> Dry Drop. All rights reserved.</p>
             </div>
         </div>
     </footer>
