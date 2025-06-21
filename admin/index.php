@@ -9,8 +9,7 @@ $stats = [];
 $user_sql = "SELECT 
                 COUNT(*) as total_users,
                 SUM(CASE WHEN user_role = 'customer' THEN 1 ELSE 0 END) as total_customers,
-                SUM(CASE WHEN user_role = 'admin' THEN 1 ELSE 0 END) as total_admins,
-                SUM(CASE WHEN user_role = 'admin' THEN 1 ELSE 0 END) as total_delivery
+                SUM(CASE WHEN user_role = 'admin' THEN 1 ELSE 0 END) as total_admins
             FROM users";
 $user_result = $conn->query($user_sql);
 $user_stats = $user_result->fetch_assoc();
