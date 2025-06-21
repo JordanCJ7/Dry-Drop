@@ -22,9 +22,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     // Validate input
     if (empty($email) || empty($password)) {
         $error = "Please enter both email and password";
-    } else {
-        // Check user credentials
-        $sql = "SELECT id, firstname, lastname, email, password, role FROM users WHERE email = ?";
+    } else {        // Check user credentials
+        $sql = "SELECT id, name, email, password, user_role FROM users WHERE email = ?";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $email);
         $stmt->execute();
@@ -32,17 +31,15 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         if ($result->num_rows == 1) {
             $user = $result->fetch_assoc();
-            
-            // Verify password
+              // Verify password
             if (password_verify($password, $user['password'])) {
-                // Set session variables
-                $_SESSION['user_id'] = $user['id'];
-                $_SESSION['user_name'] = $user['firstname'] . ' ' . $user['lastname'];
+                // Set session variables                $_SESSION['user_id'] = $user['id'];
+                $_SESSION['user_name'] = $user['name'];
                 $_SESSION['user_email'] = $user['email'];
-                $_SESSION['user_role'] = $user['role'];
+                $_SESSION['user_role'] = $user['user_role'];
                 
                 // Redirect based on role
-                if ($user['role'] == 'admin') {
+                if ($user['user_role'] == 'admin') {
                     header("Location: admin/index.php");
                 } else {
                     header("Location: customer/index.php");

@@ -7,25 +7,24 @@ $error = '';
 
 // Process profile update
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update_profile'])) {
-    $firstname = sanitize_input($_POST['firstname']);
-    $lastname = sanitize_input($_POST['lastname']);
+    $name = sanitize_input($_POST['name']);
     $phone = sanitize_input($_POST['phone']);
     $address = sanitize_input($_POST['address']);
     
     // Validate input
-    if (empty($firstname) || empty($lastname) || empty($phone)) {
+    if (empty($name) || empty($phone)) {
         $error = "Please fill in all required fields";
     } else {
         // Update user profile
-        $update_sql = "UPDATE users SET firstname = ?, lastname = ?, phone = ?, address = ? WHERE id = ?";
+        $update_sql = "UPDATE users SET name = ?, phone = ?, address = ? WHERE id = ?";
         $update_stmt = $conn->prepare($update_sql);
-        $update_stmt->bind_param("ssssi", $firstname, $lastname, $phone, $address, $user_id);
+        $update_stmt->bind_param("sssi", $name, $phone, $address, $user_id);
         
         if ($update_stmt->execute()) {
             $success = "Profile updated successfully";
             
             // Update session variable
-            $_SESSION['user_name'] = $firstname . ' ' . $lastname;
+            $_SESSION['user_name'] = $name;
             
             // Refresh user data
             $user_stmt->execute();
@@ -97,10 +96,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
 <!-- Profile Header -->
 <div class="profile-header">
     <div class="profile-avatar">
-        <i class="fas fa-user"></i>
-    </div>
+        <i class="fas fa-user"></i>    </div>
     <div class="profile-info">
-        <h2 class="profile-name"><?php echo $user['firstname'] . ' ' . $user['lastname']; ?></h2>
+        <h2 class="profile-name"><?php echo $user['name']; ?></h2>
         <p class="profile-email"><?php echo $user['email']; ?></p>
         <p class="mb-0">Member since <?php echo date('F Y', strtotime($user['created_at'])); ?></p>
     </div>
@@ -113,17 +111,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['change_password'])) {
             <h4 class="profile-section-title">Personal Information</h4>
             
             <form method="post" action="" class="needs-validation" novalidate>
-                <div class="row mb-3">
-                    <div class="col-md-6">
-                        <label for="firstname" class="form-label">First Name *</label>
-                        <input type="text" class="form-control" id="firstname" name="firstname" value="<?php echo $user['firstname']; ?>" required>
-                        <div class="invalid-feedback">First name is required</div>
-                    </div>
-                    <div class="col-md-6">
-                        <label for="lastname" class="form-label">Last Name *</label>
-                        <input type="text" class="form-control" id="lastname" name="lastname" value="<?php echo $user['lastname']; ?>" required>
-                        <div class="invalid-feedback">Last name is required</div>
-                    </div>
+                <div class="mb-3">
+                    <label for="name" class="form-label">Full Name *</label>
+                    <input type="text" class="form-control" id="name" name="name" value="<?php echo $user['name']; ?>" required>
+                    <div class="invalid-feedback">Name is required</div>
                 </div>
                 
                 <div class="mb-3">
