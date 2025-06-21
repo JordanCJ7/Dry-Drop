@@ -17,6 +17,20 @@
     <!-- Custom CSS -->
     <link rel="stylesheet" href="../assets/css/dashboard.css">
 </head>
+<?php
+// Include database connection
+require_once '../includes/config.php';
+
+// Check if user is logged in and has admin role
+session_start();
+
+if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
+    $_SESSION['message'] = "You need to login as an admin to access this page";
+    $_SESSION['message_type'] = "danger";
+    header("Location: ../login.php");
+    exit;
+}
+?>
 <body id="page-top">
 
     <!-- Page Wrapper -->
