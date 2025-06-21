@@ -1,0 +1,23 @@
+# This is a CODEOWNERS file for the Dry-Drop project
+# Each line is a file pattern followed by one or more owners
+
+# These owners will be the default owners for everything in the repo
+* @JordanCJ7
+
+# Admin section owners
+/admin/ @JordanCJ7
+
+# Customer section owners
+/customer/ @JordanCJ7
+
+# Core files
+*.php @JordanCJ7
+
+# Assets
+/assets/ @JordanCJ7
+
+# Configuration files
+/includes/config.php @JordanCJ7
+
+# Documentation
+*.md @JordanCJ7
