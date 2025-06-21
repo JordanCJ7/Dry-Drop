@@ -44,14 +44,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         
         if ($check_result->num_rows > 0) {
             $error = "Email address already in use";
-        } else {
-            // Hash password
+        } else {            // Hash password
             $hashed_password = password_hash($password, PASSWORD_DEFAULT);
             
+            // Combine first and last name into a single name
+            $name = $firstname . ' ' . $lastname;
+            
             // Insert new user
-            $sql = "INSERT INTO users (firstname, lastname, email, password, phone, address, role) VALUES (?, ?, ?, ?, ?, ?, 'customer')";
+            $sql = "INSERT INTO users (name, email, password, phone, address, user_role) VALUES (?, ?, ?, ?, ?, 'customer')";
             $stmt = $conn->prepare($sql);
-            $stmt->bind_param("ssssss", $firstname, $lastname, $email, $hashed_password, $phone, $address);
+            $stmt->bind_param("sssss", $name, $email, $hashed_password, $phone, $address);
             
             if ($stmt->execute()) {
                 $success = "Registration successful! You can now login.";
