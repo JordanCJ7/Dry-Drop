@@ -41,7 +41,7 @@ while ($order = $recent_orders_result->fetch_assoc()) {
 <!-- Welcome Card -->
 <div class="card mb-4">
     <div class="card-body">
-        <h5 class="card-title">Welcome, <?php echo $user['firstname'] . ' ' . $user['lastname']; ?>!</h5>
+        <h5 class="card-title">Welcome, <?php echo $user['name']; ?>!</h5>
         <p class="card-text">Here's an overview of your laundry services and orders.</p>
         <a href="place_order.php" class="btn btn-primary">Place New Order</a>
     </div>
