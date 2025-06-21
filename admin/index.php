@@ -8,9 +8,9 @@ $stats = [];
 // Total users
 $user_sql = "SELECT 
                 COUNT(*) as total_users,
-                SUM(CASE WHEN role = 'customer' THEN 1 ELSE 0 END) as total_customers,
-                SUM(CASE WHEN role = 'admin' THEN 1 ELSE 0 END) as total_admins,
-                SUM(CASE WHEN role = 'delivery' THEN 1 ELSE 0 END) as total_delivery
+                SUM(CASE WHEN user_role = 'customer' THEN 1 ELSE 0 END) as total_customers,
+                SUM(CASE WHEN user_role = 'admin' THEN 1 ELSE 0 END) as total_admins,
+                SUM(CASE WHEN user_role = 'admin' THEN 1 ELSE 0 END) as total_delivery
             FROM users";
 $user_result = $conn->query($user_sql);
 $user_stats = $user_result->fetch_assoc();
@@ -36,7 +36,7 @@ $inventory_stats = $inventory_result->fetch_assoc();
 $stats['inventory'] = $inventory_stats;
 
 // Get recent orders
-$recent_orders_sql = "SELECT o.*, u.firstname, u.lastname, u.email
+$recent_orders_sql = "SELECT o.*, u.name, u.email
                      FROM orders o 
                      JOIN users u ON o.user_id = u.id
                      ORDER BY o.created_at DESC 
@@ -195,10 +195,9 @@ while ($user_row = $recent_users_result->fetch_assoc()) {
                             </tr>
                         </thead>
                         <tbody>
-                            <?php foreach ($recent_orders as $order): ?>
-                                <tr>
+                            <?php foreach ($recent_orders as $order): ?>                                <tr>
                                     <td>#<?php echo $order['id']; ?></td>
-                                    <td><?php echo $order['firstname'] . ' ' . $order['lastname']; ?></td>
+                                    <td><?php echo $order['name']; ?></td>
                                     <td><?php echo date('M d, Y', strtotime($order['created_at'])); ?></td>
                                     <td>$<?php echo number_format($order['total_amount'], 2); ?></td>
                                     <td>
@@ -246,13 +245,12 @@ while ($user_row = $recent_users_result->fetch_assoc()) {
                 <ul class="list-group list-group-flush">
                     <?php foreach ($recent_users as $user_item): ?>
                         <li class="list-group-item">
-                            <div class="d-flex justify-content-between align-items-center">
-                                <div>
-                                    <h6 class="mb-0"><?php echo $user_item['firstname'] . ' ' . $user_item['lastname']; ?></h6>
+                            <div class="d-flex justify-content-between align-items-center">                                <div>
+                                    <h6 class="mb-0"><?php echo $user_item['name']; ?></h6>
                                     <small class="text-muted"><?php echo $user_item['email']; ?></small>
                                 </div>
-                                <span class="badge bg-<?php echo $user_item['role'] == 'admin' ? 'danger' : ($user_item['role'] == 'delivery' ? 'info' : 'success'); ?>">
-                                    <?php echo ucfirst($user_item['role']); ?>
+                                <span class="badge bg-<?php echo $user_item['user_role'] == 'admin' ? 'danger' : 'success'; ?>">
+                                    <?php echo ucfirst($user_item['user_role']); ?>
                                 </span>
                             </div>
                         </li>
