@@ -74,13 +74,19 @@ if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
                     <i class="fas fa-fw fa-shopping-cart"></i>
                     <span>Manage Orders</span>
                 </a>
-            </li>
-
-            <!-- Nav Item - Services -->
+            </li>            <!-- Nav Item - Services -->
             <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'services.php' ? 'active' : ''; ?>">
                 <a class="nav-link" href="services.php">
                     <i class="fas fa-fw fa-list"></i>
                     <span>Manage Services</span>
+                </a>
+            </li>
+
+            <!-- Nav Item - Packages -->
+            <li class="nav-item <?php echo basename($_SERVER['PHP_SELF']) == 'packages.php' ? 'active' : ''; ?>">
+                <a class="nav-link" href="packages.php">
+                    <i class="fas fa-fw fa-box"></i>
+                    <span>Manage Packages</span>
                 </a>
             </li>
 
