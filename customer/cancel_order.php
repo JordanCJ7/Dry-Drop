@@ -46,8 +46,8 @@ if ($order['status'] != 'pending') {
     exit;
 }
 
-// Cancel order (delete in real application, just update status for demo)
-$cancel_sql = "UPDATE orders SET status = 'canceled' WHERE id = ?";
+// Cancel order (update status to cancelled)
+$cancel_sql = "UPDATE orders SET status = 'cancelled' WHERE id = ?";
 $cancel_stmt = $conn->prepare($cancel_sql);
 $cancel_stmt->bind_param("i", $order_id);
 
