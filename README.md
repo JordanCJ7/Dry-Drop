@@ -103,6 +103,77 @@ Dry Drop/
 - **Icons**: Font Awesome
 - **Charts**: Chart.js
 
+## Database Schema
+
+The following Entity Relationship diagram represents the database structure for the Dry Drop application:
+
+```mermaid
+erDiagram
+    USER ||--o{ ORDER : places
+    USER {
+        int id PK
+        string name
+        string email
+        string password
+        string phone
+        string address
+        string role
+        datetime created_at
+    }
+    ORDER ||--|{ ORDER_ITEM : contains
+    ORDER {
+        int id PK
+        int user_id FK
+        datetime order_date
+        string status
+        datetime pickup_time
+        datetime delivery_time
+        float total_amount
+        string payment_method
+        string payment_status
+        string notes
+    }
+    ORDER_ITEM {
+        int id PK
+        int order_id FK
+        int service_id FK
+        int quantity
+        float price
+        string description
+    }
+    SERVICE ||--o{ ORDER_ITEM : "ordered in"
+    SERVICE {
+        int id PK
+        string name
+        string description
+        float price
+        string category
+        string image
+        boolean active
+    }
+    USER ||--o{ FEEDBACK : submits
+    FEEDBACK {
+        int id PK
+        int user_id FK
+        int order_id FK
+        int rating
+        string comment
+        datetime created_at
+    }
+    ORDER ||--o{ FEEDBACK : receives
+    INVENTORY ||--o{ SERVICE : "used by"
+    INVENTORY {
+        int id PK
+        string name
+        string description
+        int quantity
+        float cost
+        string supplier
+        int min_stock_level
+        datetime last_restocked
+    }
+```
+
 ## License
 
 This project is open-source and available for personal and commercial use.
