@@ -171,11 +171,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td class="service-price" data-price="<?php echo $service['price']; ?>">$<?php echo number_format($service['price'], 2); ?></td>
-                                                <td>                                                <div class="input-group" style="width: 120px;">
-                                                        <button type="button" class="btn btn-outline-secondary btn-sm">-</button>
-                                                        <input type="number" name="quantity[<?php echo $service['id']; ?>]" class="form-control form-control-sm text-center quantity-input" value="1" min="0">
-                                                        <button type="button" class="btn btn-outline-secondary btn-sm">+</button>
+                                                <td class="service-price" data-price="<?php echo $service['price']; ?>">$<?php echo number_format($service['price'], 2); ?></td>                                                <td>
+                                                    <div class="input-group" style="width: 120px;">
+                                                        <!-- Use inline JavaScript to guarantee direct execution -->
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm" 
+                                                                onclick="this.nextElementSibling.value = Math.max(0, parseInt(this.nextElementSibling.value) - 1); updateTotalsNow();">-</button>
+                                                        <input type="number" name="quantity[<?php echo $service['id']; ?>]" 
+                                                               class="form-control form-control-sm text-center" 
+                                                               value="1" min="0" 
+                                                               onchange="updateTotalsNow()">
+                                                        <button type="button" class="btn btn-outline-secondary btn-sm" 
+                                                                onclick="this.previousElementSibling.value = parseInt(this.previousElementSibling.value) + 1; updateTotalsNow();">+</button>
                                                     </div>
                                                 </td>
                                                 <td class="item-total">$<?php echo number_format($service['price'], 2); ?></td>
@@ -276,61 +282,38 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 </div>
 
 <script>
+// Global function that is called directly by inline handlers 
+function updateTotalsNow() {
+    let total = 0;
+    
+    document.querySelectorAll('.service-item').forEach(item => {
+        const price = parseFloat(item.querySelector('.service-price').dataset.price);
+        const input = item.querySelector('input[type="number"]');
+        const quantity = parseInt(input.value) || 0;
+        const itemTotal = price * quantity;
+        
+        item.querySelector('.item-total').textContent = '$' + itemTotal.toFixed(2);
+        total += itemTotal;
+    });
+    
+    document.getElementById('orderTotal').textContent = '$' + total.toFixed(2);
+    document.getElementById('orderTotal2').textContent = '$' + total.toFixed(2);
+    document.getElementById('totalAmount').value = total.toFixed(2);
+}
+
 document.addEventListener('DOMContentLoaded', function() {
     // Update totals on page load
-    updateTotal();
-    
-    function updateTotal() {
-        const items = document.querySelectorAll('.service-item');
-        let total = 0;
-        
-        items.forEach(item => {
-            const price = parseFloat(item.querySelector('.service-price').dataset.price);
-            const quantity = parseInt(item.querySelector('.quantity-input').value);
-            const itemTotal = price * quantity;
-            
-            item.querySelector('.item-total').textContent = '$' + itemTotal.toFixed(2);
-            total += itemTotal;
-        });
-        
-        document.getElementById('orderTotal').textContent = '$' + total.toFixed(2);
-        document.getElementById('orderTotal2').textContent = '$' + total.toFixed(2);
-        document.getElementById('totalAmount').value = total.toFixed(2);
-    }
-      // Quantity buttons
-    document.querySelectorAll('.quantity-input').forEach(input => {
-        const minusBtn = input.previousElementSibling;
-        const plusBtn = input.nextElementSibling;
-        
-        minusBtn.addEventListener('click', () => {
-            if (parseInt(input.value) > 0) {
-                input.value = parseInt(input.value) - 1;
-                updateTotal();
-            }
-        });
-        
-        plusBtn.addEventListener('click', () => {
-            input.value = parseInt(input.value) + 1;
-            updateTotal();
-        });
-        
-        input.addEventListener('change', () => {
-            if (parseInt(input.value) < 0) {
-                input.value = 0;
-            }
-            updateTotal();
-        });
-    });
+    updateTotalsNow();
     
     // Payment method toggle
     document.querySelectorAll('input[name="payment_method"]').forEach(radio => {
-        radio.addEventListener('change', function() {
+        radio.onchange = function() {
             if (this.value === 'online') {
                 document.getElementById('onlinePaymentDetails').classList.remove('d-none');
             } else {
                 document.getElementById('onlinePaymentDetails').classList.add('d-none');
             }
-        });
+        };
     });
     
     // Set min date to today
