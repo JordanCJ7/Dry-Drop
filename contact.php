@@ -89,7 +89,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contact_submit'])) {
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-map-marker-alt text-primary me-2"></i> Address</h5>
-                    <p class="card-text">123 Laundry Street<br>Anytown, ST 12345<br>United States</p>
+                    <p class="card-text">No. 45, Galle Road<br>Colombo 03<br>Sri Lanka</p>
                 </div>
             </div>
             
@@ -125,8 +125,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contact_submit'])) {
         <div class="col-12">
             <h2 class="text-center mb-4">Our Location</h2>
             <div class="ratio ratio-16x9">
-                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d387193.30591910525!2d-74.25986432970718!3d40.697149422113014!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x89c24fa5d33f083b%3A0xc80b8f06e177fe62!2sNew%20York%2C%20NY%2C%20USA!5e0!3m2!1sen!2sin!4v1625671749977!5m2!1sen!2sin" 
-                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy"></iframe>
+                <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d63316.29348798251!2d79.8380058!3d6.9270786!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x3ae2595c8c6b8b6b%3A0x6b8b6b8b6b8b6b8b!2sColombo%2003%2C%20Sri%20Lanka!5e0!3m2!1sen!2slk!4v1718012345678!5m2!1sen!2slk"
+                    width="600" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
             </div>
         </div>
     </div>
