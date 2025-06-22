@@ -98,9 +98,11 @@ if (isset($_GET['id']) && !$is_new) {
     $order_id = $_GET['id'];
     
     // Get order information
-    $stmt = $conn->prepare("SELECT o.*, u.name as customer_name, u.email as customer_email 
+    $stmt = $conn->prepare("SELECT o.*, u.name as customer_name, u.email as customer_email, 
+                           p.name as package_name, p.price as package_price, p.description as package_description
                            FROM orders o 
                            JOIN users u ON o.user_id = u.id 
+                           LEFT JOIN packages p ON o.package_id = p.id
                            WHERE o.id = ?");
     $stmt->bind_param("i", $order_id);
     $stmt->execute();
@@ -216,13 +218,31 @@ include 'includes/header.php';
                             </div>
                         </div>
                         
-                        <div class="col-md-12">
-                            <div class="form-group">
+                        <div class="col-md-12">                            <div class="form-group">
                                 <label>Special Instructions</label>
                                 <textarea name="special_instructions" class="form-control" rows="3"><?php echo !$is_new ? htmlspecialchars($order['special_instructions']) : ''; ?></textarea>
                             </div>
                         </div>
                     </div>
+                    
+                    <?php if (!$is_new && !empty($order['package_id'])): ?>
+                    <div class="card mb-4">
+                        <div class="card-header bg-primary text-white">
+                            <h5 class="mb-0">Package Information</h5>
+                        </div>
+                        <div class="card-body">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <p><strong>Package Name:</strong> <?php echo htmlspecialchars($order['package_name']); ?></p>
+                                    <p><strong>Package Price:</strong> $<?php echo number_format($order['package_price'], 2); ?></p>
+                                </div>
+                                <div class="col-md-6">
+                                    <p><strong>Description:</strong> <?php echo htmlspecialchars($order['package_description']); ?></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    <?php endif; ?>
                     
                     <h4 class="mt-4 mb-3">Order Items</h4>
                     
@@ -385,15 +405,22 @@ document.addEventListener('DOMContentLoaded', function() {
             }
         });
     }
-    
-    // Calculate order total
+      // Calculate order total
     function calculateTotal() {
         let total = 0;
+        
+        // Add package price if it exists
+        <?php if (!$is_new && !empty($order['package_id'])): ?>
+        total += <?php echo (float)$order['package_price']; ?>;
+        <?php endif; ?>
+        
+        // Add individual items
         document.querySelectorAll('.order-item').forEach(item => {
             const quantity = parseFloat(item.querySelector('.quantity-input').value) || 0;
             const price = parseFloat(item.querySelector('.price-input').value) || 0;
             total += quantity * price;
         });
+        
         document.getElementById('order-total').textContent = total.toFixed(2);
     }
 });
