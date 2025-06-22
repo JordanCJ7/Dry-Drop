@@ -249,7 +249,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                             <tr class="service-item">                                                <td>
                                                     <div class="d-flex align-items-center">
                                                         <div class="me-3">
-                                                            <img src="<?php echo $service['image']; ?>" alt="<?php echo $service['name']; ?>" style="width: 60px; height: 60px; object-fit: cover;" class="rounded">
+                                                            <img src="assets/images/services/<?php echo $service['image']; ?>" alt="<?php echo $service['name']; ?>" style="width: 60px; height: 60px; object-fit: cover;" class="rounded">
                                                         </div>
                                                         <div>
                                                             <h6 class="mb-0"><?php echo $service['name']; ?></h6>
