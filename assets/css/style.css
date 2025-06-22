@@ -196,6 +196,21 @@ footer {
     color: white;
 }
 
+.status-processing {
+    background-color: var(--primary-color);
+    color: white;
+}
+
+.status-completed {
+    background-color: var(--success-color);
+    color: white;
+}
+
+.status-cancelled {
+    background-color: var(--danger-color);
+    color: white;
+}
+
 /* Star Rating */
 .star-rating {
     font-size: 1.5rem;
