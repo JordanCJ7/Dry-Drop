@@ -28,12 +28,11 @@ if (isset($_POST['create_service'])) {
         $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $new_filename = uniqid() . '.' . $file_extension;
         $target_file = $target_dir . $new_filename;
-        
-        // Check file type
+          // Check file type
         $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
         if (in_array($file_extension, $allowed_types)) {
             if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
-                $image = 'assets/images/services/' . $new_filename;
+                $image = basename($target_file);
             } else {
                 $error_message = "Failed to upload image.";
             }
@@ -84,8 +83,7 @@ if (isset($_POST['update_service'])) {
         $file_extension = strtolower(pathinfo($_FILES['image']['name'], PATHINFO_EXTENSION));
         $new_filename = uniqid() . '.' . $file_extension;
         $target_file = $target_dir . $new_filename;
-        
-        // Check file type
+          // Check file type
         $allowed_types = ['jpg', 'jpeg', 'png', 'gif'];
         if (in_array($file_extension, $allowed_types)) {
             if (move_uploaded_file($_FILES['image']['tmp_name'], $target_file)) {
@@ -93,7 +91,7 @@ if (isset($_POST['update_service'])) {
                 if (!empty($current_image) && file_exists("../" . $current_image)) {
                     unlink("../" . $current_image);
                 }
-                $image = 'assets/images/services/' . $new_filename;
+                $image = basename($target_file);
             } else {
                 $error_message = "Failed to upload image.";
             }
@@ -256,12 +254,21 @@ include 'includes/header.php';
                                     </tr>
                                 <?php else: ?>
                                     <?php foreach ($services as $service): ?>
-                                        <tr>
-                                            <td>
-                                                <?php if (!empty($service['image']) && file_exists("../" . $service['image'])): ?>
+                                        <tr>                                            <td>
+                                                <?php if (!empty($service['image'])): ?>
                                                     <img src="../assets/images/services/<?php echo $service['image']; ?>" alt="<?php echo htmlspecialchars($service['name']); ?>" class="img-thumbnail" width="50">
                                                 <?php else: ?>
                                                     <img src="../assets/images/no-image.jpg" alt="No Image" class="img-thumbnail" width="50">
+                                                    <small class="d-block text-muted">
+                                                    <?php 
+                                                        if (!empty($service['image'])) {
+                                                            echo "Path: " . $service['image'] . "<br>";
+                                                            echo "Exists: " . (file_exists("../assets/images/services/" . $service['image']) ? 'Yes' : 'No');
+                                                        } else {
+                                                            echo "No image path";
+                                                        }
+                                                    ?>
+                                                    </small>
                                                 <?php endif; ?>
                                             </td>
                                             <td>
@@ -401,11 +408,9 @@ document.addEventListener('DOMContentLoaded', function() {
             document.getElementById('name').value = name;
             document.getElementById('description').value = description;
             document.getElementById('price').value = price;
-            document.getElementById('active').checked = active;
-            
-            // Show current image if available
+            document.getElementById('active').checked = active;            // Show current image if available
             if (image) {
-                currentImage.src = '../' + image;
+                currentImage.src = '../assets/images/services/' + image;
                 currentImageContainer.style.display = 'block';
             } else {
                 currentImageContainer.style.display = 'none';
