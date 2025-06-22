@@ -91,12 +91,11 @@ if ($result->num_rows > 0) {
 
 <!-- Testimonials Section -->
 <section class="bg-light py-5 mb-5">
-    <div class="container">
-        <h2 class="text-center mb-4">What Our Customers Say</h2>
+    <div class="container">        <h2 class="text-center mb-4">What Our Customers Say</h2>
         <div class="row">
             <?php
             // Fetch recent feedbacks
-            $sql = "SELECT f.*, u.firstname, u.lastname FROM feedbacks f 
+            $sql = "SELECT f.*, u.name FROM feedbacks f 
                     JOIN users u ON f.user_id = u.id 
                     ORDER BY f.created_at DESC LIMIT 3";
             $result = $conn->query($sql);
@@ -117,9 +116,8 @@ if ($result->num_rows > 0) {
                                         }
                                     }
                                     ?>
-                                </div>
-                                <p class="card-text">"<?php echo htmlspecialchars($feedback['comment']); ?>"</p>
-                                <p class="card-text text-end fw-bold">- <?php echo htmlspecialchars($feedback['firstname'] . ' ' . $feedback['lastname']); ?></p>
+                                </div>                                <p class="card-text">"<?php echo htmlspecialchars($feedback['comment']); ?>"</p>
+                                <p class="card-text text-end fw-bold">- <?php echo htmlspecialchars($feedback['name']); ?></p>
                             </div>
                         </div>
                     </div>
