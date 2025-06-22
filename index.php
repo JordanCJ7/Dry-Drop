@@ -29,7 +29,7 @@ if ($result->num_rows > 0) {
     <div class="row">        <?php foreach ($services as $service): ?>
             <div class="col-md-4">
                 <div class="card service-card">
-                    <img src="<?php echo $service['image']; ?>" class="card-img-top" alt="<?php echo $service['name']; ?>">
+                    <img src="assets/images/services/<?php echo $service['image']; ?>" class="card-img-top" alt="<?php echo $service['name']; ?>">
                     <div class="card-body">
                         <h5 class="card-title"><?php echo $service['name']; ?></h5>
                         <p class="card-text"><?php echo $service['description']; ?></p>
