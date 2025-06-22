@@ -141,9 +141,23 @@ if ($result->num_rows > 0) {
                         'name' => 'Chaminda Jayasinghe',
                         'comment' => 'Very professional service. The online ordering system is super easy!',
                         'rating' => 5
+                    ],
+                    [
+                        'name' => 'Dilani Silva',
+                        'comment' => 'Affordable prices and friendly staff. Highly recommended!',
+                        'rating' => 5
+                    ],
+                    [
+                        'name' => 'Ruwan Gunasekara',
+                        'comment' => 'Quick turnaround and my clothes smell amazing.',
+                        'rating' => 4
+                    ],
+                    [
+                        'name' => 'Sajith Weerasinghe',
+                        'comment' => 'Convenient and reliable. I appreciate the attention to detail.',
+                        'rating' => 5
                     ]
                 ];
-                
                 foreach ($dummyTestimonials as $testimonial) {
                     ?>                    <div class="col-md-4 mb-4">
                         <div class="card testimonial-card h-100">
