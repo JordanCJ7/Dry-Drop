@@ -172,10 +172,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                     </div>
                                                 </td>
                                                 <td class="service-price" data-price="<?php echo $service['price']; ?>">$<?php echo number_format($service['price'], 2); ?></td>
-                                                <td>
-                                                    <div class="input-group" style="width: 120px;">
+                                                <td>                                                <div class="input-group" style="width: 120px;">
                                                         <button type="button" class="btn btn-outline-secondary btn-sm">-</button>
-                                                        <input type="number" name="quantity[<?php echo $service['id']; ?>]" class="form-control form-control-sm text-center quantity-input" value="1" min="1">
+                                                        <input type="number" name="quantity[<?php echo $service['id']; ?>]" class="form-control form-control-sm text-center quantity-input" value="1" min="0">
                                                         <button type="button" class="btn btn-outline-secondary btn-sm">+</button>
                                                     </div>
                                                 </td>
@@ -298,14 +297,13 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('orderTotal2').textContent = '$' + total.toFixed(2);
         document.getElementById('totalAmount').value = total.toFixed(2);
     }
-    
-    // Quantity buttons
+      // Quantity buttons
     document.querySelectorAll('.quantity-input').forEach(input => {
         const minusBtn = input.previousElementSibling;
         const plusBtn = input.nextElementSibling;
         
         minusBtn.addEventListener('click', () => {
-            if (parseInt(input.value) > 1) {
+            if (parseInt(input.value) > 0) {
                 input.value = parseInt(input.value) - 1;
                 updateTotal();
             }
@@ -317,8 +315,8 @@ document.addEventListener('DOMContentLoaded', function() {
         });
         
         input.addEventListener('change', () => {
-            if (parseInt(input.value) < 1) {
-                input.value = 1;
+            if (parseInt(input.value) < 0) {
+                input.value = 0;
             }
             updateTotal();
         });
