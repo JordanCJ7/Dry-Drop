@@ -74,7 +74,7 @@ if ($result->num_rows > 0) {
                     <i class="fas fa-truck fa-3x text-primary"></i>
                 </div>
                 <h4>Pickup & Delivery</h4>
-                <p>We'll collect and return your items</p>
+                <p>Collect and return you items with care and efficiency</p>
             </div>
         </div>
         <div class="col-md-3">
