@@ -169,14 +169,18 @@ while ($user_row = $recent_users_result->fetch_assoc()) {
                         <a href="orders.php" class="btn btn-primary w-100 d-flex align-items-center justify-content-center py-3">
                             <i class="fas fa-list-alt me-2"></i> Manage Orders
                         </a>
-                    </div>
-                    <div class="col-6">
+                    </div>                    <div class="col-6">
                         <a href="services.php" class="btn btn-success w-100 d-flex align-items-center justify-content-center py-3">
                             <i class="fas fa-plus-circle me-2"></i> Add Service
                         </a>
                     </div>
                     <div class="col-6">
-                        <a href="users.php" class="btn btn-info w-100 d-flex align-items-center justify-content-center py-3 text-white">
+                        <a href="packages.php" class="btn btn-info w-100 d-flex align-items-center justify-content-center py-3 text-white">
+                            <i class="fas fa-box me-2"></i> Manage Packages
+                        </a>
+                    </div>
+                    <div class="col-6">
+                        <a href="users.php" class="btn btn-primary w-100 d-flex align-items-center justify-content-center py-3 text-white">
                             <i class="fas fa-user-plus me-2"></i> Add User
                         </a>
                     </div>
