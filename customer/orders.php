@@ -55,14 +55,12 @@ while ($order = $orders_result->fetch_assoc()) {
     <div class="card-body">
         <form method="get" action="" class="row g-3">
             <div class="col-md-4">
-                <label for="status" class="form-label">Filter by Status</label>
-                <select class="form-select" id="status" name="status">
+                <label for="status" class="form-label">Filter by Status</label>                <select class="form-select" id="status" name="status">
                     <option value="">All Orders</option>
                     <option value="pending" <?php echo isset($_GET['status']) && $_GET['status'] == 'pending' ? 'selected' : ''; ?>>Pending</option>
-                    <option value="picked_up" <?php echo isset($_GET['status']) && $_GET['status'] == 'picked_up' ? 'selected' : ''; ?>>Picked Up</option>
-                    <option value="in_washing" <?php echo isset($_GET['status']) && $_GET['status'] == 'in_washing' ? 'selected' : ''; ?>>In Washing</option>
-                    <option value="ready" <?php echo isset($_GET['status']) && $_GET['status'] == 'ready' ? 'selected' : ''; ?>>Ready</option>
-                    <option value="delivered" <?php echo isset($_GET['status']) && $_GET['status'] == 'delivered' ? 'selected' : ''; ?>>Delivered</option>
+                    <option value="processing" <?php echo isset($_GET['status']) && $_GET['status'] == 'processing' ? 'selected' : ''; ?>>Processing</option>
+                    <option value="completed" <?php echo isset($_GET['status']) && $_GET['status'] == 'completed' ? 'selected' : ''; ?>>Completed</option>
+                    <option value="cancelled" <?php echo isset($_GET['status']) && $_GET['status'] == 'cancelled' ? 'selected' : ''; ?>>Cancelled</option>
                 </select>
             </div>
             <div class="col-md-4 d-flex align-items-end">
@@ -101,25 +99,23 @@ while ($order = $orders_result->fetch_assoc()) {
                                 <td>#<?php echo $order['id']; ?></td>
                                 <td><?php echo date('M d, Y', strtotime($order['created_at'])); ?></td>
                                 <td><?php echo $order['total_items']; ?> items</td>
-                                <td>$<?php echo number_format($order['total_amount'], 2); ?></td>
-                                <td>
+                                <td>$<?php echo number_format($order['total_amount'], 2); ?></td>                                <td>
                                     <?php
                                     switch ($order['status']) {
                                         case 'pending':
                                             echo '<span class="status-badge status-pending">Pending</span>';
                                             break;
-                                        case 'picked_up':
-                                            echo '<span class="status-badge status-picked-up">Picked Up</span>';
+                                        case 'processing':
+                                            echo '<span class="status-badge status-processing">Processing</span>';
                                             break;
-                                        case 'in_washing':
-                                            echo '<span class="status-badge status-in-washing">In Washing</span>';
+                                        case 'completed':
+                                            echo '<span class="status-badge status-completed">Completed</span>';
                                             break;
-                                        case 'ready':
-                                            echo '<span class="status-badge status-ready">Ready</span>';
+                                        case 'cancelled':
+                                            echo '<span class="status-badge status-cancelled">Cancelled</span>';
                                             break;
-                                        case 'delivered':
-                                            echo '<span class="status-badge status-delivered">Delivered</span>';
-                                            break;
+                                        default:
+                                            echo '<span class="status-badge">' . ucfirst($order['status']) . '</span>';
                                     }
                                     ?>
                                 </td>
