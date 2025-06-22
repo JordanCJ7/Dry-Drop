@@ -19,9 +19,9 @@ $stats['users'] = $user_stats;
 $order_sql = "SELECT 
                 COUNT(*) as total_orders,
                 SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_orders,
-                SUM(CASE WHEN status = 'picked_up' OR status = 'in_washing' THEN 1 ELSE 0 END) as processing_orders,
-                SUM(CASE WHEN status = 'ready' THEN 1 ELSE 0 END) as ready_orders,
-                SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_orders,
+                SUM(CASE WHEN status = 'processing' THEN 1 ELSE 0 END) as processing_orders,
+                SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_orders,
+                SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_orders,
                 SUM(total_amount) as total_revenue
             FROM orders";
 $order_result = $conn->query($order_sql);
@@ -221,25 +221,23 @@ while ($user_row = $recent_users_result->fetch_assoc()) {
                                     <td>#<?php echo $order['id']; ?></td>
                                     <td><?php echo $order['name']; ?></td>
                                     <td><?php echo date('M d, Y', strtotime($order['created_at'])); ?></td>
-                                    <td>$<?php echo number_format($order['total_amount'], 2); ?></td>
-                                    <td>
+                                    <td>$<?php echo number_format($order['total_amount'], 2); ?></td>                                    <td>
                                         <?php
                                         switch ($order['status']) {
                                             case 'pending':
                                                 echo '<span class="status-badge status-pending">Pending</span>';
                                                 break;
-                                            case 'picked_up':
-                                                echo '<span class="status-badge status-picked-up">Picked Up</span>';
+                                            case 'processing':
+                                                echo '<span class="status-badge status-processing">Processing</span>';
                                                 break;
-                                            case 'in_washing':
-                                                echo '<span class="status-badge status-in-washing">In Washing</span>';
+                                            case 'completed':
+                                                echo '<span class="status-badge status-completed">Completed</span>';
                                                 break;
-                                            case 'ready':
-                                                echo '<span class="status-badge status-ready">Ready</span>';
+                                            case 'cancelled':
+                                                echo '<span class="status-badge status-cancelled">Cancelled</span>';
                                                 break;
-                                            case 'delivered':
-                                                echo '<span class="status-badge status-delivered">Delivered</span>';
-                                                break;
+                                            default:
+                                                echo '<span class="status-badge">' . ucfirst($order['status']) . '</span>';
                                         }
                                         ?>
                                     </td>
@@ -347,25 +345,24 @@ while ($user_row = $recent_users_result->fetch_assoc()) {
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 
 <script>
-document.addEventListener('DOMContentLoaded', function() {
-    // Order Status Chart
+document.addEventListener('DOMContentLoaded', function() {    // Order Status Chart
     var ctx = document.getElementById('orderStatusChart').getContext('2d');
     var orderStatusChart = new Chart(ctx, {
         type: 'doughnut',
         data: {
-            labels: ['Pending', 'Processing', 'Ready', 'Delivered'],
+            labels: ['Pending', 'Processing', 'Completed', 'Cancelled'],
             datasets: [{
                 data: [
                     <?php echo $stats['orders']['pending_orders']; ?>,
                     <?php echo $stats['orders']['processing_orders']; ?>,
-                    <?php echo $stats['orders']['ready_orders']; ?>,
-                    <?php echo $stats['orders']['delivered_orders']; ?>
+                    <?php echo $stats['orders']['completed_orders']; ?>,
+                    <?php echo $stats['orders']['cancelled_orders']; ?>
                 ],
                 backgroundColor: [
-                    '#ffc107',
-                    '#0d6efd',
-                    '#198754',
-                    '#212529'
+                    '#ffc107', // Yellow for pending
+                    '#0d6efd', // Blue for processing
+                    '#198754', // Green for completed
+                    '#dc3545'  // Red for cancelled
                 ],
                 borderWidth: 0
             }]
