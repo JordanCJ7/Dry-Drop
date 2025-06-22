@@ -249,19 +249,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         <div class="card-header bg-primary text-white">
                             <h5 class="mb-0">Order Summary</h5>
                         </div>
-                        <div class="card-body">
-                            <div class="d-flex justify-content-between mb-3">
+                        <div class="card-body">                            <div class="d-flex justify-content-between mb-3">
                                 <span>Subtotal:</span>
-                                <span id="orderTotal">$0.00</span>
+                                <span id="orderSubtotal">$0.00</span>
                             </div>
                             <div class="d-flex justify-content-between mb-3">
                                 <span>Delivery Fee:</span>
-                                <span>$0.00</span>
+                                <span id="deliveryFee">$0.00</span>
                             </div>
                             <hr>
                             <div class="d-flex justify-content-between mb-3 fw-bold">
                                 <span>Total:</span>
-                                <span id="orderTotal2">$0.00</span>
+                                <span id="orderTotal">$0.00</span>
                             </div>
                             <input type="hidden" name="total_amount" id="totalAmount" value="0">
                             
@@ -284,7 +283,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 <script>
 // Global function that is called directly by inline handlers 
 function updateTotalsNow() {
-    let total = 0;
+    let subtotal = 0;
     
     document.querySelectorAll('.service-item').forEach(item => {
         const price = parseFloat(item.querySelector('.service-price').dataset.price);
@@ -293,11 +292,28 @@ function updateTotalsNow() {
         const itemTotal = price * quantity;
         
         item.querySelector('.item-total').textContent = '$' + itemTotal.toFixed(2);
-        total += itemTotal;
+        subtotal += itemTotal;
     });
     
+    // Calculate delivery fee based on subtotal
+    let deliveryFee = 0;
+    if (subtotal > 0) {
+        if (subtotal < 20) {
+            deliveryFee = (subtotal * 0.2); // 20% delivery fee for orders under $20
+        } else if (subtotal < 50) {
+            deliveryFee = (subtotal * 0.1); // 10% delivery fee for orders between $20 and $50
+        } else {
+            deliveryFee = (subtotal * 0.05); // 5% delivery for orders over $50
+        }
+    }
+    
+    // Calculate total (subtotal + delivery fee)
+    const total = subtotal + deliveryFee;
+    
+    // Update display
+    document.getElementById('orderSubtotal').textContent = '$' + subtotal.toFixed(2);
+    document.getElementById('deliveryFee').textContent = '$' + deliveryFee.toFixed(2);
     document.getElementById('orderTotal').textContent = '$' + total.toFixed(2);
-    document.getElementById('orderTotal2').textContent = '$' + total.toFixed(2);
     document.getElementById('totalAmount').value = total.toFixed(2);
 }
 
