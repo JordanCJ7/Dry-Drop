@@ -90,9 +90,11 @@ $sql = "CREATE TABLE IF NOT EXISTS orders (
     pickup_address TEXT NOT NULL,
     delivery_date DATETIME,
     special_instructions TEXT,
+    package_id INT(11) NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
+    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+    FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE SET NULL
 )";
 $conn->query($sql);
 
@@ -122,6 +124,22 @@ $sql = "CREATE TABLE IF NOT EXISTS feedbacks (
 )";
 $conn->query($sql);
 
+// Create packages table
+$sql = "CREATE TABLE IF NOT EXISTS packages (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    max_garments INT NOT NULL,
+    num_deliveries INT NOT NULL,
+    includes_services TEXT,
+    active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)";
+$conn->query($sql);
+
 // Insert default services
 $servicesCheck = $conn->query("SELECT COUNT(*) as count FROM services");
 $serviceCount = $servicesCheck->fetch_assoc()['count'];
@@ -139,6 +157,25 @@ if ($serviceCount == 0) {
     
     foreach ($services as $service) {
         $stmt->bind_param("ssds", $service[0], $service[1], $service[2], $service[3]);
+        $stmt->execute();
+    }
+}
+
+// Insert default packages
+$packagesCheck = $conn->query("SELECT COUNT(*) as count FROM packages");
+$packagesCount = $packagesCheck->fetch_assoc()['count'];
+
+if ($packagesCount == 0) {
+    $packages = [
+        ['Weekly Package', 'weekly', 'Up to 20 garments with free pickup and delivery, includes washing and ironing with 1 regular delivery per week', 89.99, 20, 1, 'Washing,Ironing'],
+        ['Monthly Package', 'monthly', 'Up to 80 garments with free priority pickup and delivery, includes all services with 4 deliveries per month', 299.99, 80, 4, 'Washing,Dry Cleaning,Ironing,Folding,Express Service'],
+        ['Family Package', 'family', 'Up to 50 garments with free pickup and delivery, includes washing, dry cleaning and ironing with 2 deliveries per month', 199.99, 50, 2, 'Washing,Dry Cleaning,Ironing']
+    ];
+    
+    $stmt = $conn->prepare("INSERT INTO packages (name, code, description, price, max_garments, num_deliveries, includes_services) VALUES (?, ?, ?, ?, ?, ?, ?)");
+    
+    foreach ($packages as $package) {
+        $stmt->bind_param("sssdiis", $package[0], $package[1], $package[2], $package[3], $package[4], $package[5], $package[6]);
         $stmt->execute();
     }
 }
