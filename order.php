@@ -349,15 +349,11 @@ function updateTotalsNow() {
     
     // Calculate total (subtotal + delivery fee)
     const total = subtotal + deliveryFee;
-    
-    // Update display
+      // Update display
     document.getElementById('orderSubtotal').textContent = '$' + subtotal.toFixed(2);
     document.getElementById('deliveryFee').textContent = '$' + deliveryFee.toFixed(2);
     document.getElementById('orderTotal').textContent = '$' + total.toFixed(2);
     document.getElementById('totalAmount').value = total.toFixed(2);
-    
-    // For debugging
-    console.log("Subtotal:", subtotal, "Delivery Fee:", deliveryFee, "Total:", total);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
