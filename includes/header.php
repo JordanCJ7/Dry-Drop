@@ -1,4 +1,6 @@
 <?php 
+// Start the session before accessing session variables
+session_start();
 require_once 'includes/config.php';
 
 // Check if user is logged in
