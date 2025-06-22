@@ -19,9 +19,8 @@ include_once 'includes/header.php';
             <p>Dry Drop was founded in 2020 with a simple mission: to make laundry hassle-free for busy people. What started as a small local service has grown into a comprehensive laundry solution serving thousands of customers.</p>
             <p>Our journey began when our founder, tired of spending weekends doing laundry, realized there had to be a better way. By combining technology with traditional laundry services, we've created a seamless experience that saves our customers time and effort.</p>
             <p>Today, we're proud to be the leading laundry service provider in the region, known for our quality, reliability, and customer-focused approach.</p>
-        </div>
-        <div class="col-lg-6">
-            <img src="assets/images/about-us.jpg" alt="About Dry Drop" class="img-fluid rounded shadow">
+        </div>        <div class="col-lg-6">
+            <img src="assets/images/about/Our Story.png" alt="Our Story" class="img-fluid rounded shadow">
         </div>
     </div>
     
@@ -62,11 +61,10 @@ include_once 'includes/header.php';
         <div class="col-lg-6 order-lg-2">
             <h2>Our Team</h2>
             <p>Behind every clean garment is a dedicated team of professionals who are passionate about what they do. Our staff includes experienced laundry specialists, customer service representatives, and delivery personnel who work together to ensure your satisfaction.</p>
-            <p>All our team members undergo rigorous training to maintain our high standards of quality and service. Many have been with us since the beginning, contributing to our consistent service excellence.</p>
-            <p>We're more than just a service provider - we're a community of people who care about making your life easier.</p>
+            <p>All our team members undergo rigorous training to maintain our high standards of quality and service. Many have been with us since the beginning, contributing to our consistent service excellence.</p>            <p>We're more than just a service provider - we're a community of people who care about making your life easier.</p>
         </div>
         <div class="col-lg-6 order-lg-1">
-            <img src="assets/images/our-team.jpg" alt="Our Team" class="img-fluid rounded shadow">
+            <img src="assets/images/about/Our Team.png" alt="Our Team" class="img-fluid rounded shadow">
         </div>
     </div>
     
