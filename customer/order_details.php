@@ -118,7 +118,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_feedback'])) {
                     
                     <div class="timeline-item">
                         <div class="timeline-marker <?php echo in_array($order['status'], ['processing', 'completed']) ? 'active' : ''; ?>">
-                            <i class="fas fa-truck"></i>
+                            <i class="fas fa-sync-alt"></i>
                         </div>
                         <div class="timeline-content">
                             <h5>Processing</h5>
@@ -146,11 +146,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_feedback'])) {
                             <?php endif; ?>
                         </div>
                     </div>
-                            <h5>Ready for Delivery</h5>
-                            <p>Your laundry is cleaned and ready for delivery.</p>
-                        </div>
-                    </div>
-                      <div class="timeline-item">
+                    
+                    <div class="timeline-item">
                         <div class="timeline-marker <?php echo $order['status'] == 'cancelled' ? 'active' : ''; ?>">
                             <i class="fas fa-ban"></i>
                         </div>
@@ -183,11 +180,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_feedback'])) {
                                 break;
                             case 'cancelled':
                                 echo '<span class="status-badge status-cancelled">Cancelled</span>';
-                                break;
-                            default:
+                                break;                        default:
                                 echo '<span class="status-badge">' . ucfirst($order['status']) . '</span>';
                         }
-                        ?>
                         ?>
                     </div>
                     <div>
@@ -222,11 +217,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_feedback'])) {
                         </thead>
                         <tbody>
                             <?php foreach ($items as $item): ?>
-                                <tr>
-                                    <td>
+                                <tr>                                    <td>
                                         <div class="d-flex align-items-center">
                                             <div class="me-3">
-                                                <img src="../assets/images/<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" style="width: 50px; height: 50px; object-fit: cover;" class="rounded">
+                                                <img src="../assets/images/services/<?php echo $item['image']; ?>" alt="<?php echo $item['name']; ?>" style="width: 50px; height: 50px; object-fit: cover;" class="rounded">
                                             </div>
                                             <div>
                                                 <h6 class="mb-0"><?php echo $item['name']; ?></h6>
@@ -362,8 +356,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_feedback'])) {
                 </ul>
             </div>
         </div>
-        
-        <?php if ($order['status'] == 'delivered' && $order['delivery_date']): ?>
+          <?php if ($order['status'] == 'completed' && $order['delivery_date']): ?>
             <div class="card mb-4">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">Delivery Details</h5>
