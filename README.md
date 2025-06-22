@@ -32,6 +32,33 @@ A comprehensive web application for managing laundry services, built with PHP, M
    - Configure your database connection in `includes/config.php` if needed (default uses localhost, root, no password)
    - Access the application through your web browser
 
+## How to Run
+
+1. **Start your local server**:
+   - If using XAMPP: Start Apache and MySQL services from the XAMPP Control Panel
+   - If using WAMP: Ensure the WAMP server is running
+   - If using MAMP: Start the MAMP services
+
+2. **Access the application**:
+   - Place the project in your server's web directory (e.g., `htdocs` for XAMPP, `www` for WAMP)
+   - Open your browser and navigate to one of these URLs:
+
+3. **Important URLs**:
+   - Main website: `http://localhost/Dry-Drop/`
+   - Customer registration: `http://localhost/Dry-Drop/register.php`
+   - User login: `http://localhost/Dry-Drop/login.php`
+   - Admin dashboard (after login): `http://localhost/Dry-Drop/admin/index.php`
+   - Customer dashboard (after login): `http://localhost/Dry-Drop/customer/index.php`
+
+4. **Login credentials**:
+   - Admin: Email `admin@drydrop.com`, Password `admin123`
+   - Customer: Register a new account or use an existing customer account
+
+5. **Troubleshooting**:
+   - If you encounter database connection issues, verify your database settings in `includes/config.php`
+   - Ensure your web server has PHP write permissions to create/update the database
+   - For session-related issues, check that cookies are enabled in your browser
+
 ## Default Admin Account
 
 - Email: admin@drydrop.com
