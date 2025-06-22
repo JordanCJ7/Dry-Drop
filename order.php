@@ -24,6 +24,8 @@ $success = '';
 
 // Get services based on selection
 $services = [];
+$package = null;
+
 if (isset($_GET['service_id'])) {
     // Single service
     $service_id = $_GET['service_id'];
@@ -37,23 +39,46 @@ if (isset($_GET['service_id'])) {
         $services[] = $result->fetch_assoc();
     }
 } elseif (isset($_GET['package'])) {
-    // Package (pre-selected services)
-    $package = $_GET['package'];
+    // Package (pre-selected services with special pricing)
+    $package_code = $_GET['package'];
     
-    if ($package == 'weekly') {
-        $sql = "SELECT * FROM services WHERE active = 1 LIMIT 3";    } elseif ($package == 'monthly') {
-        $sql = "SELECT * FROM services WHERE active = 1";
-    } elseif ($package == 'family') {
-        $sql = "SELECT * FROM services WHERE active = 1 LIMIT 4";
+    // Get package details
+    $package_sql = "SELECT * FROM packages WHERE code = ? AND active = 1";
+    $package_stmt = $conn->prepare($package_sql);
+    $package_stmt->bind_param("s", $package_code);
+    $package_stmt->execute();
+    $package_result = $package_stmt->get_result();
+    
+    if ($package_result->num_rows > 0) {
+        $package = $package_result->fetch_assoc();
+        
+        // Get services included in the package
+        $included_services = explode(',', $package['includes_services']);
+        
+        // Fetch services that are included in the package
+        $services_sql = "SELECT * FROM services WHERE name IN (";
+        $services_sql .= str_repeat('?,', count($included_services) - 1) . "?";
+        $services_sql .= ") AND active = 1";
+        
+        $services_stmt = $conn->prepare($services_sql);
+        $services_stmt->bind_param(str_repeat('s', count($included_services)), ...$included_services);
+        $services_stmt->execute();
+        $services_result = $services_stmt->get_result();
+        
+        if ($services_result->num_rows > 0) {
+            while ($row = $services_result->fetch_assoc()) {
+                $services[] = $row;
+            }
+        }
     } else {
+        // Fallback to all services if package not found
         $sql = "SELECT * FROM services WHERE active = 1";
-    }
-    
-    $result = $conn->query($sql);
-    
-    if ($result->num_rows > 0) {
-        while ($row = $result->fetch_assoc()) {
-            $services[] = $row;
+        $result = $conn->query($sql);
+        
+        if ($result->num_rows > 0) {
+            while ($row = $result->fetch_assoc()) {
+                $services[] = $row;
+            }
         }
     }
 } else {
@@ -75,13 +100,20 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pickup_address = sanitize_input($_POST['pickup_address']);
     $payment_method = sanitize_input($_POST['payment_method']);
     $total_amount = floatval(sanitize_input($_POST['total_amount']));
+    $package_id = isset($_POST['package_id']) ? intval(sanitize_input($_POST['package_id'])) : null;
     
     // Enhanced validation
     $has_items = false;
-    foreach ($_POST['quantity'] as $service_id => $quantity) {
-        if (intval($quantity) > 0) {
-            $has_items = true;
-            break;
+    
+    // Check if we're dealing with a package or individual services
+    if ($package_id) {
+        $has_items = true; // Packages always have items
+    } else {
+        foreach ($_POST['quantity'] as $service_id => $quantity) {
+            if (intval($quantity) > 0) {
+                $has_items = true;
+                break;
+            }
         }
     }
     
@@ -97,11 +129,18 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
         $conn->begin_transaction();
         
         try {
-            // Create order
-            $order_sql = "INSERT INTO orders (user_id, total_amount, status, payment_status, payment_method, pickup_date, pickup_time, pickup_address) 
-                        VALUES (?, ?, 'pending', 'pending', ?, ?, ?, ?)";
-            $order_stmt = $conn->prepare($order_sql);
-            $order_stmt->bind_param("idssss", $user_id, $total_amount, $payment_method, $pickup_date, $pickup_time, $pickup_address);
+            // Create order with package_id if applicable
+            if ($package_id) {
+                $order_sql = "INSERT INTO orders (user_id, total_amount, status, payment_status, payment_method, pickup_date, pickup_time, pickup_address, package_id) 
+                            VALUES (?, ?, 'pending', 'pending', ?, ?, ?, ?, ?)";
+                $order_stmt = $conn->prepare($order_sql);
+                $order_stmt->bind_param("idssssi", $user_id, $total_amount, $payment_method, $pickup_date, $pickup_time, $pickup_address, $package_id);
+            } else {
+                $order_sql = "INSERT INTO orders (user_id, total_amount, status, payment_status, payment_method, pickup_date, pickup_time, pickup_address) 
+                            VALUES (?, ?, 'pending', 'pending', ?, ?, ?, ?)";
+                $order_stmt = $conn->prepare($order_sql);
+                $order_stmt->bind_param("idssss", $user_id, $total_amount, $payment_method, $pickup_date, $pickup_time, $pickup_address);
+            }
             
             if (!$order_stmt->execute()) {
                 throw new Exception("Error creating order: " . $order_stmt->error);
@@ -178,6 +217,16 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     
     <?php if (count($services) > 0): ?>
         <form method="post" action="" id="orderForm">
+            <?php if ($package): ?>
+                <div class="alert alert-success mb-4">
+                    <h5><i class="fas fa-tag me-2"></i> <?php echo $package['name']; ?> Selected</h5>
+                    <p class="mb-0"><?php echo $package['description']; ?></p>
+                    <p class="mb-0 mt-2"><strong>Package Price:</strong> $<?php echo number_format($package['price'], 2); ?></p>
+                    <input type="hidden" name="package_id" value="<?php echo $package['id']; ?>">
+                    <input type="hidden" name="package_price" value="<?php echo $package['price']; ?>">
+                </div>
+            <?php endif; ?>
+            
             <div class="row">
                 <div class="col-lg-8">
                     <div class="card mb-4">
@@ -209,7 +258,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                                                         </div>
                                                     </div>
                                                 </td>
-                                                <td class="service-price" data-price="<?php echo $service['price']; ?>">$<?php echo number_format($service['price'], 2); ?></td>                                                <td>
+                                                <td class="service-price" data-price="<?php echo $service['price']; ?>">$<?php echo number_format($service['price'], 2); ?></td>
+                                                <td>
                                                     <div class="input-group" style="width: 120px;">
                                                         <!-- Use inline JavaScript to guarantee direct execution -->
                                                         <button type="button" class="btn btn-outline-secondary btn-sm" 
@@ -323,33 +373,56 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
 function updateTotalsNow() {
     let subtotal = 0;
     
-    document.querySelectorAll('.service-item').forEach(item => {
-        const price = parseFloat(item.querySelector('.service-price').dataset.price);
-        const input = item.querySelector('input[type="number"]');
-        const quantity = parseInt(input.value) || 0;
-        const itemTotal = price * quantity;
+    // Check if a package is selected
+    const packagePriceElement = document.querySelector('input[name="package_price"]');
+    const isPackage = packagePriceElement !== null;
+    
+    if (isPackage) {
+        // If a package is selected, use the package price as the base
+        subtotal = parseFloat(packagePriceElement.value);
         
-        item.querySelector('.item-total').textContent = '$' + itemTotal.toFixed(2);
-        subtotal += itemTotal;
-    });
+        // Update service item totals but don't add to subtotal since it's included in package
+        document.querySelectorAll('.service-item').forEach(item => {
+            const price = parseFloat(item.querySelector('.service-price').dataset.price);
+            const input = item.querySelector('input[type="number"]');
+            const quantity = parseInt(input.value) || 0;
+            const itemTotal = price * quantity;
+            
+            item.querySelector('.item-total').textContent = '$' + itemTotal.toFixed(2);
+        });
+    } else {
+        // Regular item-by-item pricing
+        document.querySelectorAll('.service-item').forEach(item => {
+            const price = parseFloat(item.querySelector('.service-price').dataset.price);
+            const input = item.querySelector('input[type="number"]');
+            const quantity = parseInt(input.value) || 0;
+            const itemTotal = price * quantity;
+            
+            item.querySelector('.item-total').textContent = '$' + itemTotal.toFixed(2);
+            subtotal += itemTotal;
+        });
+    }
     
     // Calculate delivery fee based on subtotal
     let deliveryFee = 0;
     if (subtotal > 0) {
-        if (subtotal < 20) {
-            deliveryFee = (subtotal * 0.2); // 20% delivery fee for orders under $20
-        } else if (subtotal < 50) {
-            deliveryFee = (subtotal * 0.1); // 10% delivery fee for orders between $20 and $50
-        } else {
-            deliveryFee = (subtotal * 0.05); // 5% delivery for orders over $50
+        if (!isPackage) { // Only apply delivery fee if not a package (packages include free delivery)
+            if (subtotal < 20) {
+                deliveryFee = (subtotal * 0.2); // 20% delivery fee for orders under $20
+            } else if (subtotal < 50) {
+                deliveryFee = (subtotal * 0.1); // 10% delivery fee for orders between $20 and $50
+            } else {
+                deliveryFee = (subtotal * 0.05); // 5% delivery for orders over $50
+            }
+            // Ensure delivery fee is at least $5
+            deliveryFee = Math.max(deliveryFee, 5);
         }
-        // Ensure delivery fee is at least $5
-        deliveryFee = Math.max(deliveryFee, 5);
     }
     
     // Calculate total (subtotal + delivery fee)
     const total = subtotal + deliveryFee;
-      // Update display
+    
+    // Update display
     document.getElementById('orderSubtotal').textContent = '$' + subtotal.toFixed(2);
     document.getElementById('deliveryFee').textContent = '$' + deliveryFee.toFixed(2);
     document.getElementById('orderTotal').textContent = '$' + total.toFixed(2);
