@@ -26,11 +26,10 @@ if ($result->num_rows > 0) {
 <!-- Services Preview Section -->
 <section class="container">
     <h2 class="text-center mb-4">Our Services</h2>
-    <div class="row">
-        <?php foreach ($services as $service): ?>
+    <div class="row">        <?php foreach ($services as $service): ?>
             <div class="col-md-4">
                 <div class="card service-card">
-                    <img src="assets/images/<?php echo $service['image']; ?>" class="card-img-top" alt="<?php echo $service['name']; ?>">
+                    <img src="<?php echo $service['image']; ?>" class="card-img-top" alt="<?php echo $service['name']; ?>">
                     <div class="card-body">
                         <h5 class="card-title"><?php echo $service['name']; ?></h5>
                         <p class="card-text"><?php echo $service['description']; ?></p>
