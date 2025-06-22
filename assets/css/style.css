@@ -24,24 +24,30 @@ footer {
 
 /* Hero Section */
 .hero {
-    background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('../images/laundry-hero.jpg');
+    background: linear-gradient(rgba(0, 0, 0, 0.6), rgba(0, 0, 0, 0.6)), url('../images/laundry-hero.jpg');
     background-size: cover;
     background-position: center;
     color: white;
     padding: 80px 0;
     text-align: center;
     margin-bottom: 30px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
 }
 
 .hero h1 {
     font-size: 3rem;
     margin-bottom: 20px;
+    font-weight: 700;
+    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
 }
 
 .hero p {
     font-size: 1.2rem;
     max-width: 800px;
     margin: 0 auto 30px;
+    font-weight: 400;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+    line-height: 1.6;
 }
 
 /* Services Section */
@@ -50,6 +56,23 @@ footer {
     transition: transform 0.3s, box-shadow 0.3s;
     margin-bottom: 20px;
     height: 100%;
+    background-color: #fff;
+    border: 1px solid rgba(0,0,0,0.125);
+}
+
+.service-card .card-body {
+    background-color: #fff;
+    color: #333;
+}
+
+.service-card .card-title {
+    color: #0d6efd;
+    font-weight: 600;
+}
+
+.service-card .card-text {
+    color: #333;
+    font-size: 1rem;
 }
 
 /* Star Rating Styles */
@@ -177,6 +200,90 @@ footer {
 .star-rating {
     font-size: 1.5rem;
     color: var(--warning-color);
+}
+
+/* Testimonials Section */
+.bg-light {
+    background-color: #f8f9fa !important;
+}
+
+.testimonial-card {
+    transition: transform 0.3s, box-shadow 0.3s;
+    background-color: white;
+    border: 1px solid rgba(0,0,0,0.1);
+}
+
+.testimonial-card .card-body {
+    background-color: #fff;
+    color: #333;
+    padding: 1.5rem;
+}
+
+.testimonial-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+.testimonial-card .card-text {
+    color: #212529;
+    font-style: italic;
+    margin-bottom: 1rem;
+    font-size: 1.05rem;
+}
+
+/* How It Works Section */
+.how-it-works-icon {
+    padding: 20px;
+    border-radius: 50%;
+    background-color: #e9f2ff;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 15px;
+}
+
+.how-it-works-item {
+    padding: 20px;
+    transition: transform 0.3s;
+    border-radius: 10px;
+    background-color: white;
+    box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+    margin-bottom: 15px;
+}
+
+.how-it-works-item h4 {
+    color: #0d6efd;
+    margin-bottom: 10px;
+    font-weight: 600;
+}
+
+.how-it-works-item p {
+    color: #333;
+}
+
+.how-it-works-item:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+/* Section Headings */
+section h2 {
+    color: #0d6efd;
+    font-weight: 700;
+    margin-bottom: 1.5rem;
+    position: relative;
+    padding-bottom: 15px;
+}
+
+section h2::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 80px;
+    height: 3px;
+    background-color: #0d6efd;
 }
 
 /* Responsive adjustments */
