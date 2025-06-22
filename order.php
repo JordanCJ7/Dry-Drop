@@ -74,11 +74,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
     $pickup_time = sanitize_input($_POST['pickup_time']);
     $pickup_address = sanitize_input($_POST['pickup_address']);
     $payment_method = sanitize_input($_POST['payment_method']);
-    $total_amount = sanitize_input($_POST['total_amount']);
+    $total_amount = floatval(sanitize_input($_POST['total_amount']));
+    
+    // Enhanced validation
+    $has_items = false;
+    foreach ($_POST['quantity'] as $service_id => $quantity) {
+        if (intval($quantity) > 0) {
+            $has_items = true;
+            break;
+        }
+    }
     
     // Validate input
     if (empty($pickup_date) || empty($pickup_time) || empty($pickup_address)) {
         $error = "Please fill in all required fields";
+    } elseif ($total_amount <= 0) {
+        $error = "Your order total must be greater than zero";
+    } elseif (!$has_items) {
+        $error = "Please select at least one service";
     } else {
         // Start transaction
         $conn->begin_transaction();
@@ -89,25 +102,49 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
                         VALUES (?, ?, 'pending', 'pending', ?, ?, ?, ?)";
             $order_stmt = $conn->prepare($order_sql);
             $order_stmt->bind_param("idssss", $user_id, $total_amount, $payment_method, $pickup_date, $pickup_time, $pickup_address);
-            $order_stmt->execute();
+            
+            if (!$order_stmt->execute()) {
+                throw new Exception("Error creating order: " . $order_stmt->error);
+            }
             
             $order_id = $conn->insert_id;
             
+            // Check if order_id is valid
+            if (!$order_id) {
+                throw new Exception("Failed to get order ID");
+            }
+            
             // Add order items
+            $has_valid_items = false;
             foreach ($_POST['quantity'] as $service_id => $quantity) {
+                $quantity = intval($quantity); // Ensure it's an integer
                 if ($quantity > 0) {
                     $price_sql = "SELECT price FROM services WHERE id = ?";
                     $price_stmt = $conn->prepare($price_sql);
                     $price_stmt->bind_param("i", $service_id);
                     $price_stmt->execute();
                     $price_result = $price_stmt->get_result();
+                    
+                    if ($price_result->num_rows === 0) {
+                        throw new Exception("Service not found: ID " . $service_id);
+                    }
+                    
                     $service_price = $price_result->fetch_assoc()['price'];
                     
                     $item_sql = "INSERT INTO order_items (order_id, service_id, quantity, price) VALUES (?, ?, ?, ?)";
                     $item_stmt = $conn->prepare($item_sql);
                     $item_stmt->bind_param("iiid", $order_id, $service_id, $quantity, $service_price);
-                    $item_stmt->execute();
+                    
+                    if (!$item_stmt->execute()) {
+                        throw new Exception("Error adding order item: " . $item_stmt->error);
+                    }
+                    
+                    $has_valid_items = true;
                 }
+            }
+            
+            if (!$has_valid_items) {
+                throw new Exception("No valid items in order");
             }
             
             // Commit transaction
@@ -120,11 +157,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST') {
             // Redirect to order details
             header("Location: customer/order_details.php?id=" . $order_id);
             exit;
-            
-        } catch (Exception $e) {
-            // Rollback transaction on error
+        } catch (Exception $e) {            // Rollback transaction on error
             $conn->rollback();
-            $error = "An error occurred while placing your order. Please try again.";
+            // For debugging only - in production you'd want a generic message
+            $error = "An error occurred while placing your order: " . $e->getMessage();
+            // Log the error (in a production environment, you should use proper logging)
+            error_log("Order Error: " . $e->getMessage() . " in " . $e->getFile() . " on line " . $e->getLine());
         }
     }
 }
@@ -305,6 +343,8 @@ function updateTotalsNow() {
         } else {
             deliveryFee = (subtotal * 0.05); // 5% delivery for orders over $50
         }
+        // Ensure delivery fee is at least $5
+        deliveryFee = Math.max(deliveryFee, 5);
     }
     
     // Calculate total (subtotal + delivery fee)
@@ -315,6 +355,9 @@ function updateTotalsNow() {
     document.getElementById('deliveryFee').textContent = '$' + deliveryFee.toFixed(2);
     document.getElementById('orderTotal').textContent = '$' + total.toFixed(2);
     document.getElementById('totalAmount').value = total.toFixed(2);
+    
+    // For debugging
+    console.log("Subtotal:", subtotal, "Delivery Fee:", deliveryFee, "Total:", total);
 }
 
 document.addEventListener('DOMContentLoaded', function() {
