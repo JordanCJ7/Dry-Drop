@@ -92,7 +92,10 @@ $count_stmt->close();
 
 // Get orders with pagination
 $sql = "SELECT o.*, u.name as customer_name, u.email as customer_email,
-        (SELECT SUM(oi.quantity * oi.price) FROM order_items oi WHERE oi.order_id = o.id) as total_amount
+        CASE 
+            WHEN o.package_id IS NOT NULL THEN o.total_amount
+            ELSE (SELECT SUM(oi.quantity * oi.price) FROM order_items oi WHERE oi.order_id = o.id)
+        END as total_amount
         FROM orders o
         JOIN users u ON o.user_id = u.id ";
 
