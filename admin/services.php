@@ -259,7 +259,7 @@ include 'includes/header.php';
                                         <tr>
                                             <td>
                                                 <?php if (!empty($service['image']) && file_exists("../" . $service['image'])): ?>
-                                                    <img src="../<?php echo $service['image']; ?>" alt="<?php echo htmlspecialchars($service['name']); ?>" class="img-thumbnail" width="50">
+                                                    <img src="../assets/images/services/<?php echo $service['image']; ?>" alt="<?php echo htmlspecialchars($service['name']); ?>" class="img-thumbnail" width="50">
                                                 <?php else: ?>
                                                     <img src="../assets/images/no-image.jpg" alt="No Image" class="img-thumbnail" width="50">
                                                 <?php endif; ?>
