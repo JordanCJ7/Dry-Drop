@@ -51,29 +51,37 @@ if ($result->num_rows > 0) {
     <h2 class="text-center mb-4">How It Works</h2>
     <div class="row text-center">
         <div class="col-md-3">
-            <div class="mb-4">
-                <i class="fas fa-user-plus fa-3x text-primary mb-3"></i>
+            <div class="how-it-works-item">
+                <div class="how-it-works-icon">
+                    <i class="fas fa-user-plus fa-3x text-primary"></i>
+                </div>
                 <h4>Create Account</h4>
                 <p>Register and set up your account with us</p>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="mb-4">
-                <i class="fas fa-shopping-cart fa-3x text-primary mb-3"></i>
+            <div class="how-it-works-item">
+                <div class="how-it-works-icon">
+                    <i class="fas fa-shopping-cart fa-3x text-primary"></i>
+                </div>
                 <h4>Place Order</h4>
                 <p>Choose services and schedule pickup</p>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="mb-4">
-                <i class="fas fa-truck fa-3x text-primary mb-3"></i>
+            <div class="how-it-works-item">
+                <div class="how-it-works-icon">
+                    <i class="fas fa-truck fa-3x text-primary"></i>
+                </div>
                 <h4>Pickup & Delivery</h4>
                 <p>We'll collect and return your items</p>
             </div>
         </div>
         <div class="col-md-3">
-            <div class="mb-4">
-                <i class="fas fa-thumbs-up fa-3x text-primary mb-3"></i>
+            <div class="how-it-works-item">
+                <div class="how-it-works-icon">
+                    <i class="fas fa-thumbs-up fa-3x text-primary"></i>
+                </div>
                 <h4>Enjoy Clean Clothes</h4>
                 <p>Receive fresh, clean clothes at your doorstep</p>
             </div>
@@ -95,9 +103,8 @@ if ($result->num_rows > 0) {
             
             if ($result->num_rows > 0) {
                 while ($feedback = $result->fetch_assoc()) {
-                    ?>
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
+                    ?>                    <div class="col-md-4 mb-4">
+                        <div class="card testimonial-card h-100">
                             <div class="card-body">
                                 <div class="mb-3">
                                     <?php
@@ -139,9 +146,8 @@ if ($result->num_rows > 0) {
                 ];
                 
                 foreach ($dummyTestimonials as $testimonial) {
-                    ?>
-                    <div class="col-md-4 mb-4">
-                        <div class="card h-100">
+                    ?>                    <div class="col-md-4 mb-4">
+                        <div class="card testimonial-card h-100">
                             <div class="card-body">
                                 <div class="mb-3">
                                     <?php
