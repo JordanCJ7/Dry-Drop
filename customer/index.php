@@ -6,9 +6,9 @@ include_once 'includes/header.php';
 $stats_sql = "SELECT 
                 COUNT(*) as total_orders,
                 SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_orders,
-                SUM(CASE WHEN status = 'picked_up' OR status = 'in_washing' THEN 1 ELSE 0 END) as processing_orders,
-                SUM(CASE WHEN status = 'ready' THEN 1 ELSE 0 END) as ready_orders,
-                SUM(CASE WHEN status = 'delivered' THEN 1 ELSE 0 END) as delivered_orders
+                SUM(CASE WHEN status = 'processing' THEN 1 ELSE 0 END) as processing_orders,
+                SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_orders,
+                SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_orders
             FROM orders WHERE user_id = ?";
 $stats_stmt = $conn->prepare($stats_sql);
 $stats_stmt->bind_param("i", $user_id);
@@ -96,13 +96,12 @@ while ($order = $recent_orders_result->fetch_assoc()) {
             </div>
         </div>
     </div>
-    
-    <div class="col-xl-3 col-md-6">
+      <div class="col-xl-3 col-md-6">
         <div class="card dashboard-stat-card bg-success text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
-                        <div class="stat-count"><?php echo $stats['delivered_orders'] ?: 0; ?></div>
+                        <div class="stat-count"><?php echo $stats['completed_orders'] ?: 0; ?></div>
                         <div class="stat-label">Completed Orders</div>
                     </div>
                     <div class="stat-icon bg-white text-success">
@@ -140,24 +139,22 @@ while ($order = $recent_orders_result->fetch_assoc()) {
                                 <td><?php echo date('M d, Y', strtotime($order['created_at'])); ?></td>
                                 <td><?php echo $order['total_items']; ?> items</td>
                                 <td>$<?php echo number_format($order['total_amount'], 2); ?></td>
-                                <td>
-                                    <?php
+                                <td>                                    <?php
                                     switch ($order['status']) {
                                         case 'pending':
                                             echo '<span class="status-badge status-pending">Pending</span>';
                                             break;
-                                        case 'picked_up':
-                                            echo '<span class="status-badge status-picked-up">Picked Up</span>';
+                                        case 'processing':
+                                            echo '<span class="status-badge status-processing">Processing</span>';
                                             break;
-                                        case 'in_washing':
-                                            echo '<span class="status-badge status-in-washing">In Washing</span>';
+                                        case 'completed':
+                                            echo '<span class="status-badge status-completed">Completed</span>';
                                             break;
-                                        case 'ready':
-                                            echo '<span class="status-badge status-ready">Ready</span>';
+                                        case 'cancelled':
+                                            echo '<span class="status-badge status-cancelled">Cancelled</span>';
                                             break;
-                                        case 'delivered':
-                                            echo '<span class="status-badge status-delivered">Delivered</span>';
-                                            break;
+                                        default:
+                                            echo '<span class="status-badge">' . ucfirst($order['status']) . '</span>';
                                     }
                                     ?>
                                 </td>
@@ -199,7 +196,7 @@ while ($order = $recent_orders_result->fetch_assoc()) {
                 while ($service = $services_result->fetch_assoc()) {
                     ?>                    <div class="col-md-4 mb-3">
                         <div class="card h-100">
-                            <img src="../<?php echo $service['image']; ?>" class="card-img-top" alt="<?php echo $service['name']; ?>" style="height: 300px; object-fit: cover;">
+                            <img src="../assets/images/services/<?php echo $service['image']; ?>" class="card-img-top" alt="<?php echo $service['name']; ?>" style="height: 300px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo $service['name']; ?></h5>
                                 <p class="card-text"><?php echo $service['description']; ?></p>
