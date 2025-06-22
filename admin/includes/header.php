@@ -22,7 +22,9 @@
 require_once '../includes/config.php';
 
 // Check if user is logged in and has admin role
-session_start();
+if (session_status() == PHP_SESSION_NONE) {
+    session_start();
+}
 
 if (!isset($_SESSION['user_id']) || $_SESSION['user_role'] != 'admin') {
     $_SESSION['message'] = "You need to login as an admin to access this page";
