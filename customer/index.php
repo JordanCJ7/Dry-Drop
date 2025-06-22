@@ -197,10 +197,9 @@ while ($order = $recent_orders_result->fetch_assoc()) {
             
             if ($services_result->num_rows > 0) {
                 while ($service = $services_result->fetch_assoc()) {
-                    ?>
-                    <div class="col-md-4 mb-3">
+                    ?>                    <div class="col-md-4 mb-3">
                         <div class="card h-100">
-                            <img src="../assets/images/<?php echo $service['image']; ?>" class="card-img-top" alt="<?php echo $service['name']; ?>" style="height: 150px; object-fit: cover;">
+                            <img src="../<?php echo $service['image']; ?>" class="card-img-top" alt="<?php echo $service['name']; ?>" style="height: 300px; object-fit: cover;">
                             <div class="card-body">
                                 <h5 class="card-title"><?php echo $service['name']; ?></h5>
                                 <p class="card-text"><?php echo $service['description']; ?></p>
