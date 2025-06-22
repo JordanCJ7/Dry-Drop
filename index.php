@@ -116,7 +116,8 @@ if ($result->num_rows > 0) {
                                         }
                                     }
                                     ?>
-                                </div>                                <p class="card-text">"<?php echo htmlspecialchars($feedback['comment']); ?>"</p>
+                                </div>                                
+                                <p class="card-text">"<?php echo htmlspecialchars($feedback['comment']); ?>"</p>
                                 <p class="card-text text-end fw-bold">- <?php echo htmlspecialchars($feedback['name']); ?></p>
                             </div>
                         </div>
@@ -127,18 +128,18 @@ if ($result->num_rows > 0) {
                 // Display dummy testimonials if no real ones exist
                 $dummyTestimonials = [
                     [
-                        'name' => 'John Smith',
-                        'comment' => 'Great service! My clothes have never been cleaner. Will definitely use again.',
+                        'name' => 'අශාන් පෙරේරා',
+                        'comment' => 'ඉතා හොඳ සේවාවක්! මගේ ඇඳුම් කිසිදා මෙතරම් පිරිසිදු වී නැහැ. නැවතත් භාවිතා කරනවා.',
                         'rating' => 5
                     ],
                     [
-                        'name' => 'Sarah Johnson',
-                        'comment' => 'Prompt pickup and delivery. The quality of cleaning is excellent.',
+                        'name' => 'නදීකා ප්‍රනාන්දු',
+                        'comment' => 'ඉතා වේගවත් රැගෙන යාම සහ බෙදාදීම. පිරිසිදු කිරීමේ ගුණාත්මකභාවය ඉතා හොඳයි.',
                         'rating' => 4
                     ],
                     [
-                        'name' => 'Michael Brown',
-                        'comment' => 'Very professional service. The online ordering system is so convenient!',
+                        'name' => 'චමින්ද ජයසිංහ',
+                        'comment' => 'ඉතා වෘත්තීයමය සේවාවක්. ඔන්ලයින් ඇණවුම් පද්ධතිය ඉතා පහසුයි!',
                         'rating' => 5
                     ]
                 ];
