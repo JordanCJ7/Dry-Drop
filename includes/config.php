@@ -77,6 +77,22 @@ $sql = "CREATE TABLE IF NOT EXISTS inventory_log (
 )";
 $conn->query($sql);
 
+// Create packages table
+$sql = "CREATE TABLE IF NOT EXISTS packages (
+    id INT(11) AUTO_INCREMENT PRIMARY KEY,
+    name VARCHAR(100) NOT NULL,
+    code VARCHAR(50) NOT NULL UNIQUE,
+    description TEXT,
+    price DECIMAL(10,2) NOT NULL,
+    max_garments INT NOT NULL,
+    num_deliveries INT NOT NULL,
+    includes_services TEXT,
+    active TINYINT(1) DEFAULT 1,
+    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+)";
+$conn->query($sql);
+
 // Create orders table
 $sql = "CREATE TABLE IF NOT EXISTS orders (
     id INT(11) AUTO_INCREMENT PRIMARY KEY,
@@ -124,21 +140,11 @@ $sql = "CREATE TABLE IF NOT EXISTS feedbacks (
 )";
 $conn->query($sql);
 
-// Create packages table
-$sql = "CREATE TABLE IF NOT EXISTS packages (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    name VARCHAR(100) NOT NULL,
-    code VARCHAR(50) NOT NULL UNIQUE,
-    description TEXT,
-    price DECIMAL(10,2) NOT NULL,
-    max_garments INT NOT NULL,
-    num_deliveries INT NOT NULL,
-    includes_services TEXT,
-    active TINYINT(1) DEFAULT 1,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
-)";
-$conn->query($sql);
+// Check if package_id column exists in orders table, add it if not
+$checkPackageIdColumn = $conn->query("SHOW COLUMNS FROM orders LIKE 'package_id'");
+if ($checkPackageIdColumn->num_rows == 0) {
+    $conn->query("ALTER TABLE orders ADD COLUMN package_id INT(11) NULL AFTER special_instructions, ADD FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE SET NULL");
+}
 
 // Insert default services
 $servicesCheck = $conn->query("SELECT COUNT(*) as count FROM services");
