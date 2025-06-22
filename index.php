@@ -155,7 +155,7 @@ if ($result->num_rows > 0) {
                     [
                         'name' => 'Sajith Weerasinghe',
                         'comment' => 'Convenient and reliable. I appreciate the attention to detail.',
-                        'rating' => 5
+                        'rating' => 4
                     ]
                 ];
                 foreach ($dummyTestimonials as $testimonial) {
