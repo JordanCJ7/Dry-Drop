@@ -43,12 +43,12 @@ while ($item = $items_result->fetch_assoc()) {
     $items[] = $item;
 }
 
-// Check if the order is delivered and feedback not submitted
+// Check if the order is completed and feedback not submitted
 $can_submit_feedback = false;
 $has_feedback = false;
 $feedback = null;
 
-if ($order['status'] == 'delivered') {
+if ($order['status'] == 'completed') {
     // Check if feedback exists
     $feedback_sql = "SELECT * FROM feedbacks WHERE order_id = ? AND user_id = ?";
     $feedback_stmt = $conn->prepare($feedback_sql);
@@ -102,10 +102,9 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_feedback'])) {
             <div class="card-header bg-light">
                 <h5 class="mb-0">Order Status</h5>
             </div>
-            <div class="card-body">
-                <div class="order-timeline">
+            <div class="card-body">                <div class="order-timeline">
                     <div class="timeline-item">
-                        <div class="timeline-marker <?php echo in_array($order['status'], ['pending', 'picked_up', 'in_washing', 'ready', 'delivered']) ? 'active' : ''; ?>">
+                        <div class="timeline-marker <?php echo in_array($order['status'], ['pending', 'processing', 'completed']) ? 'active' : ''; ?>">
                             <i class="fas fa-clipboard-check"></i>
                         </div>
                         <div class="timeline-content">
@@ -118,13 +117,13 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_feedback'])) {
                     </div>
                     
                     <div class="timeline-item">
-                        <div class="timeline-marker <?php echo in_array($order['status'], ['picked_up', 'in_washing', 'ready', 'delivered']) ? 'active' : ''; ?>">
+                        <div class="timeline-marker <?php echo in_array($order['status'], ['processing', 'completed']) ? 'active' : ''; ?>">
                             <i class="fas fa-truck"></i>
                         </div>
                         <div class="timeline-content">
-                            <h5>Picked Up</h5>
-                            <p>Your laundry has been picked up from your location.</p>
-                            <?php if (in_array($order['status'], ['picked_up', 'in_washing', 'ready', 'delivered'])): ?>
+                            <h5>Processing</h5>
+                            <p>Your laundry is being processed.</p>
+                            <?php if (in_array($order['status'], ['processing', 'completed'])): ?>
                                 <div class="timeline-date">
                                     <i class="far fa-calendar-alt me-1"></i> <?php echo date('M d, Y', strtotime($order['pickup_date'])); ?> 
                                     <i class="far fa-clock ms-2 me-1"></i> <?php echo date('h:i A', strtotime($order['pickup_time'])); ?>
@@ -134,36 +133,33 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_feedback'])) {
                     </div>
                     
                     <div class="timeline-item">
-                        <div class="timeline-marker <?php echo in_array($order['status'], ['in_washing', 'ready', 'delivered']) ? 'active' : ''; ?>">
-                            <i class="fas fa-tshirt"></i>
-                        </div>
-                        <div class="timeline-content">
-                            <h5>In Process</h5>
-                            <p>Your laundry is currently being processed.</p>
-                        </div>
-                    </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-marker <?php echo in_array($order['status'], ['ready', 'delivered']) ? 'active' : ''; ?>">
+                        <div class="timeline-marker <?php echo in_array($order['status'], ['completed']) ? 'active' : ''; ?>">
                             <i class="fas fa-check-circle"></i>
                         </div>
                         <div class="timeline-content">
+                            <h5>Completed</h5>
+                            <p>Your laundry has been completed and is ready for delivery or pickup.</p>
+                            <?php if ($order['status'] == 'completed' && !empty($order['delivery_date'])): ?>
+                                <div class="timeline-date">
+                                    <i class="far fa-calendar-alt me-1"></i> <?php echo date('M d, Y h:i A', strtotime($order['delivery_date'])); ?>
+                                </div>
+                            <?php endif; ?>
+                        </div>
+                    </div>
                             <h5>Ready for Delivery</h5>
                             <p>Your laundry is cleaned and ready for delivery.</p>
                         </div>
                     </div>
-                    
-                    <div class="timeline-item">
-                        <div class="timeline-marker <?php echo $order['status'] == 'delivered' ? 'active' : ''; ?>">
-                            <i class="fas fa-home"></i>
+                      <div class="timeline-item">
+                        <div class="timeline-marker <?php echo $order['status'] == 'cancelled' ? 'active' : ''; ?>">
+                            <i class="fas fa-ban"></i>
                         </div>
                         <div class="timeline-content">
-                            <h5>Delivered</h5>
-                            <p>Your clean laundry has been delivered to your location.</p>
-                            <?php if ($order['status'] == 'delivered' && $order['delivery_date']): ?>
+                            <h5>Cancelled</h5>
+                            <p>This order has been cancelled.</p>
+                            <?php if ($order['status'] == 'cancelled'): ?>
                                 <div class="timeline-date">
-                                    <i class="far fa-calendar-alt me-1"></i> <?php echo date('M d, Y', strtotime($order['delivery_date'])); ?> 
-                                    <i class="far fa-clock ms-2 me-1"></i> <?php echo date('h:i A', strtotime($order['delivery_time'])); ?>
+                                    <i class="far fa-calendar-alt me-1"></i> <?php echo date('M d, Y', strtotime($order['updated_at'])); ?> 
                                 </div>
                             <?php endif; ?>
                         </div>
@@ -179,19 +175,19 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['submit_feedback'])) {
                             case 'pending':
                                 echo '<span class="status-badge status-pending">Pending</span>';
                                 break;
-                            case 'picked_up':
-                                echo '<span class="status-badge status-picked-up">Picked Up</span>';
+                            case 'processing':
+                                echo '<span class="status-badge status-processing">Processing</span>';
                                 break;
-                            case 'in_washing':
-                                echo '<span class="status-badge status-in-washing">In Washing</span>';
+                            case 'completed':
+                                echo '<span class="status-badge status-completed">Completed</span>';
                                 break;
-                            case 'ready':
-                                echo '<span class="status-badge status-ready">Ready</span>';
+                            case 'cancelled':
+                                echo '<span class="status-badge status-cancelled">Cancelled</span>';
                                 break;
-                            case 'delivered':
-                                echo '<span class="status-badge status-delivered">Delivered</span>';
-                                break;
+                            default:
+                                echo '<span class="status-badge">' . ucfirst($order['status']) . '</span>';
                         }
+                        ?>
                         ?>
                     </div>
                     <div>
