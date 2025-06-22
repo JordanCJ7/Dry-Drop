@@ -65,9 +65,8 @@ while ($order = $recent_orders_result->fetch_assoc()) {
             </div>
         </div>
     </div>
-    
-    <div class="col-xl-3 col-md-6">
-        <div class="card dashboard-stat-card bg-warning text-dark">
+      <div class="col-xl-3 col-md-6">
+        <div class="card dashboard-stat-card bg-warning text-white">
             <div class="card-body">
                 <div class="d-flex justify-content-between align-items-center">
                     <div>
