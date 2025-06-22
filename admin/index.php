@@ -28,10 +28,29 @@ $order_result = $conn->query($order_sql);
 $order_stats = $order_result->fetch_assoc();
 $stats['orders'] = $order_stats;
 
-// Inventory alerts
-$inventory_sql = "SELECT COUNT(*) as low_stock FROM inventory WHERE quantity <= threshold";
-$inventory_result = $conn->query($inventory_sql);
-$inventory_stats = $inventory_result->fetch_assoc();
+// Check if inventory table exists before querying it
+$check_table_sql = "SHOW TABLES LIKE 'inventory'";
+$table_exists = $conn->query($check_table_sql)->num_rows > 0;
+
+// Set default values if table doesn't exist
+$inventory_stats = ['low_stock' => 0];
+
+if ($table_exists) {
+    // Check if the required columns exist in the inventory table
+    $check_columns_sql = "SHOW COLUMNS FROM inventory LIKE 'quantity'";
+    $quantity_column_exists = $conn->query($check_columns_sql)->num_rows > 0;
+    
+    $check_threshold_sql = "SHOW COLUMNS FROM inventory LIKE 'threshold'";
+    $threshold_column_exists = $conn->query($check_threshold_sql)->num_rows > 0;
+    
+    // Only query if both columns exist
+    if ($quantity_column_exists && $threshold_column_exists) {
+        // Inventory alerts - only run if table and columns exist
+        $inventory_sql = "SELECT COUNT(*) as low_stock FROM inventory WHERE quantity <= threshold";
+        $inventory_result = $conn->query($inventory_sql);
+        $inventory_stats = $inventory_result->fetch_assoc();
+    }
+}
 $stats['inventory'] = $inventory_stats;
 
 // Get recent orders
@@ -261,34 +280,58 @@ while ($user_row = $recent_users_result->fetch_assoc()) {
         <div class="card mt-4">
             <div class="card-header bg-light">
                 <h5 class="mb-0">Inventory Alerts</h5>
-            </div>
-            <div class="card-body">
+            </div>            <div class="card-body">
                 <?php
-                $low_stock_sql = "SELECT * FROM inventory WHERE quantity <= threshold ORDER BY quantity ASC LIMIT 5";
-                $low_stock_result = $conn->query($low_stock_sql);
+                // Check if inventory table exists
+                $check_table_sql = "SHOW TABLES LIKE 'inventory'";
+                $table_exists = $conn->query($check_table_sql)->num_rows > 0;
                 
-                if ($low_stock_result->num_rows > 0) {
-                    echo '<ul class="list-group list-group-flush">';
-                    while ($item = $low_stock_result->fetch_assoc()) {
-                        $stock_percentage = ($item['quantity'] / $item['threshold']) * 100;
-                        $alert_class = $stock_percentage <= 30 ? 'danger' : ($stock_percentage <= 70 ? 'warning' : 'success');
+                if ($table_exists) {
+                    // Check if the required columns exist
+                    $check_columns_sql = "SHOW COLUMNS FROM inventory LIKE 'quantity'";
+                    $quantity_column_exists = $conn->query($check_columns_sql)->num_rows > 0;
+                    
+                    $check_threshold_sql = "SHOW COLUMNS FROM inventory LIKE 'threshold'";
+                    $threshold_column_exists = $conn->query($check_threshold_sql)->num_rows > 0;
+                    
+                    if ($quantity_column_exists && $threshold_column_exists) {
+                        $low_stock_sql = "SELECT * FROM inventory WHERE quantity <= threshold ORDER BY quantity ASC LIMIT 5";
+                        $low_stock_result = $conn->query($low_stock_sql);
                         
-                        echo '<li class="list-group-item">';
-                        echo '<div class="d-flex justify-content-between align-items-center mb-2">';
-                        echo '<div><h6 class="mb-0">' . $item['name'] . '</h6></div>';
-                        echo '<span class="badge bg-' . $alert_class . '">' . $item['quantity'] . ' ' . $item['unit'] . '</span>';
+                        if ($low_stock_result->num_rows > 0) {
+                            echo '<ul class="list-group list-group-flush">';
+                            while ($item = $low_stock_result->fetch_assoc()) {
+                                $stock_percentage = ($item['quantity'] / $item['threshold']) * 100;
+                                $alert_class = $stock_percentage <= 30 ? 'danger' : ($stock_percentage <= 70 ? 'warning' : 'success');
+                                
+                                echo '<li class="list-group-item">';
+                                echo '<div class="d-flex justify-content-between align-items-center mb-2">';
+                                echo '<div><h6 class="mb-0">' . $item['name'] . '</h6></div>';
+                                echo '<span class="badge bg-' . $alert_class . '">' . $item['quantity'] . ' ' . $item['unit'] . '</span>';
+                                echo '</div>';
+                                echo '<div class="progress" style="height: 5px;">';
+                                echo '<div class="progress-bar bg-' . $alert_class . '" role="progressbar" style="width: ' . $stock_percentage . '%"></div>';
+                                echo '</div>';
+                                echo '</li>';
+                            }
+                            echo '</ul>';
+                            echo '<div class="text-center mt-3">';
+                            echo '<a href="inventory.php" class="btn btn-sm btn-outline-primary">View All Inventory</a>';
+                            echo '</div>';
+                        } else {
+                            echo '<p class="text-center py-3 mb-0">No low stock items found.</p>';
+                        }
+                    } else {
+                        echo '<div class="alert alert-info">';
+                        echo '<p class="mb-0">Inventory tracking structure needs to be set up.</p>';
+                        echo '<a href="inventory.php" class="btn btn-sm btn-primary mt-2">Set Up Inventory</a>';
                         echo '</div>';
-                        echo '<div class="progress" style="height: 5px;">';
-                        echo '<div class="progress-bar bg-' . $alert_class . '" role="progressbar" style="width: ' . $stock_percentage . '%"></div>';
-                        echo '</div>';
-                        echo '</li>';
                     }
-                    echo '</ul>';
-                    echo '<div class="text-center mt-3">';
-                    echo '<a href="inventory.php" class="btn btn-sm btn-outline-primary">View All Inventory</a>';
-                    echo '</div>';
                 } else {
-                    echo '<p class="text-center py-3 mb-0">No low stock items found.</p>';
+                    echo '<div class="alert alert-info">';
+                    echo '<p class="mb-0">Inventory tracking is not set up yet.</p>';
+                    echo '<a href="inventory.php" class="btn btn-sm btn-primary mt-2">Set Up Inventory</a>';
+                    echo '</div>';
                 }
                 ?>
             </div>
