@@ -1,9 +1,52 @@
 <?php
-// Database configuration
-define('DB_HOST', 'localhost');
-define('DB_USER', 'root');
-define('DB_PASS', '');
-define('DB_NAME', 'drydrop');
+/**
+ * Smart Environment Configuration for Dry-Drop
+ * Automatically detects environment and uses appropriate database settings
+ */
+
+// Detect environment
+function getEnvironment() {
+    $host = $_SERVER['HTTP_HOST'] ?? 'localhost';
+    
+    if (strpos($host, 'localhost') !== false || strpos($host, '127.0.0.1') !== false) {
+        return 'local';
+    } elseif (strpos($host, 'infinityfree') !== false || strpos($host, '.epizy.com') !== false) {
+        return 'infinityfree';
+    } else {
+        return 'production';
+    }
+}
+
+// Environment-specific configurations
+$environment = getEnvironment();
+
+switch ($environment) {
+    case 'local':
+        // XAMPP Local Development
+        define('DB_HOST', 'localhost');
+        define('DB_USER', 'root');
+        define('DB_PASS', '');
+        define('DB_NAME', 'drydrop');
+        define('ENVIRONMENT', 'development');
+        break;
+          case 'infinityfree':
+        // InfinityFree Hosting - UPDATE THESE WITH YOUR ACTUAL DETAILS FROM INFINITYFREE
+        define('DB_HOST', 'sql102.infinityfree.com'); // Replace with YOUR actual host
+        define('DB_USER', 'if0_39315078');              // Replace with YOUR actual username
+        define('DB_PASS', 'jordanCJ7');           // Replace with YOUR actual password
+        define('DB_NAME', 'if0_39315078_drydrop');      // Replace with YOUR actual database name
+        define('ENVIRONMENT', 'production');
+        break;
+        
+    default:
+        // Other hosting providers
+        define('DB_HOST', 'localhost');
+        define('DB_USER', 'your_username');
+        define('DB_PASS', 'your_password');
+        define('DB_NAME', 'your_database');
+        define('ENVIRONMENT', 'production');
+        break;
+}
 
 // Create database connection
 $conn = new mysqli(DB_HOST, DB_USER, DB_PASS);
@@ -13,10 +56,12 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Create database if it doesn't exist
-$sql = "CREATE DATABASE IF NOT EXISTS " . DB_NAME;
-if ($conn->query($sql) !== TRUE) {
-    die("Error creating database: " . $conn->error);
+// Create database if it doesn't exist (for local development)
+if ($environment === 'local') {
+    $sql = "CREATE DATABASE IF NOT EXISTS " . DB_NAME;
+    if ($conn->query($sql) !== TRUE) {
+        die("Error creating database: " . $conn->error);
+    }
 }
 
 // Select the database
@@ -65,16 +110,29 @@ $sql = "CREATE TABLE IF NOT EXISTS inventory (
 $conn->query($sql);
 
 // Create inventory_log table
-$sql = "CREATE TABLE IF NOT EXISTS inventory_log (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    inventory_id INT(11) NOT NULL,
-    adjustment INT NOT NULL,
-    reason VARCHAR(100),
-    admin_id INT(11),
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (inventory_id) REFERENCES inventory(id) ON DELETE CASCADE,
-    FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET NULL
-)";
+if ($environment === 'local') {
+    // Local development with foreign keys
+    $sql = "CREATE TABLE IF NOT EXISTS inventory_log (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        inventory_id INT(11) NOT NULL,
+        adjustment INT NOT NULL,
+        reason VARCHAR(100),
+        admin_id INT(11),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (inventory_id) REFERENCES inventory(id) ON DELETE CASCADE,
+        FOREIGN KEY (admin_id) REFERENCES users(id) ON DELETE SET NULL
+    )";
+} else {
+    // Production (InfinityFree) without foreign keys
+    $sql = "CREATE TABLE IF NOT EXISTS inventory_log (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        inventory_id INT(11) NOT NULL,
+        adjustment INT NOT NULL,
+        reason VARCHAR(100),
+        admin_id INT(11),
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+}
 $conn->query($sql);
 
 // Create packages table
@@ -94,56 +152,109 @@ $sql = "CREATE TABLE IF NOT EXISTS packages (
 $conn->query($sql);
 
 // Create orders table
-$sql = "CREATE TABLE IF NOT EXISTS orders (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    user_id INT(11) NOT NULL,
-    total_amount DECIMAL(10,2) NOT NULL,
-    status ENUM('pending', 'processing', 'completed', 'cancelled') DEFAULT 'pending',
-    payment_status ENUM('pending', 'paid', 'refunded') DEFAULT 'pending',
-    payment_method ENUM('cash', 'online') DEFAULT 'cash',
-    pickup_date DATE NOT NULL,
-    pickup_time TIME NOT NULL,
-    pickup_address TEXT NOT NULL,
-    delivery_date DATETIME,
-    special_instructions TEXT,
-    package_id INT(11) NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE SET NULL
-)";
+if ($environment === 'local') {
+    // Local development with foreign keys
+    $sql = "CREATE TABLE IF NOT EXISTS orders (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        user_id INT(11) NOT NULL,
+        total_amount DECIMAL(10,2) NOT NULL,
+        status ENUM('pending', 'processing', 'completed', 'cancelled') DEFAULT 'pending',
+        payment_status ENUM('pending', 'paid', 'refunded') DEFAULT 'pending',
+        payment_method ENUM('cash', 'online') DEFAULT 'cash',
+        pickup_date DATE NOT NULL,
+        pickup_time TIME NOT NULL,
+        pickup_address TEXT NOT NULL,
+        delivery_date DATETIME,
+        special_instructions TEXT,
+        package_id INT(11) NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE SET NULL
+    )";
+} else {
+    // Production (InfinityFree) without foreign keys
+    $sql = "CREATE TABLE IF NOT EXISTS orders (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        user_id INT(11) NOT NULL,
+        total_amount DECIMAL(10,2) NOT NULL,
+        status ENUM('pending', 'processing', 'completed', 'cancelled') DEFAULT 'pending',
+        payment_status ENUM('pending', 'paid', 'refunded') DEFAULT 'pending',
+        payment_method ENUM('cash', 'online') DEFAULT 'cash',
+        pickup_date DATE NOT NULL,
+        pickup_time TIME NOT NULL,
+        pickup_address TEXT NOT NULL,
+        delivery_date DATETIME,
+        special_instructions TEXT,
+        package_id INT(11) NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+    )";
+}
 $conn->query($sql);
 
 // Create order_items table
-$sql = "CREATE TABLE IF NOT EXISTS order_items (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    order_id INT(11) NOT NULL,
-    service_id INT(11) NOT NULL,
-    quantity INT(11) NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
-    FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
-)";
+if ($environment === 'local') {
+    // Local development with foreign keys
+    $sql = "CREATE TABLE IF NOT EXISTS order_items (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        order_id INT(11) NOT NULL,
+        service_id INT(11) NOT NULL,
+        quantity INT(11) NOT NULL,
+        price DECIMAL(10,2) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+        FOREIGN KEY (service_id) REFERENCES services(id) ON DELETE CASCADE
+    )";
+} else {
+    // Production (InfinityFree) without foreign keys
+    $sql = "CREATE TABLE IF NOT EXISTS order_items (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        order_id INT(11) NOT NULL,
+        service_id INT(11) NOT NULL,
+        quantity INT(11) NOT NULL,
+        price DECIMAL(10,2) NOT NULL,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+}
 $conn->query($sql);
 
 // Create feedbacks table
-$sql = "CREATE TABLE IF NOT EXISTS feedbacks (
-    id INT(11) AUTO_INCREMENT PRIMARY KEY,
-    user_id INT(11) NOT NULL,
-    order_id INT(11) NOT NULL,
-    rating INT(1) NOT NULL,
-    comment TEXT,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
-    FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
-)";
+if ($environment === 'local') {
+    // Local development with foreign keys
+    $sql = "CREATE TABLE IF NOT EXISTS feedbacks (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        user_id INT(11) NOT NULL,
+        order_id INT(11) NOT NULL,
+        rating INT(1) NOT NULL,
+        comment TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+        FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+        FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE
+    )";
+} else {
+    // Production (InfinityFree) without foreign keys
+    $sql = "CREATE TABLE IF NOT EXISTS feedbacks (
+        id INT(11) AUTO_INCREMENT PRIMARY KEY,
+        user_id INT(11) NOT NULL,
+        order_id INT(11) NOT NULL,
+        rating INT(1) NOT NULL,
+        comment TEXT,
+        created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+    )";
+}
 $conn->query($sql);
 
-// Check if package_id column exists in orders table, add it if not
+// Check if package_id column exists in orders table, add it if not (without foreign key on InfinityFree)
 $checkPackageIdColumn = $conn->query("SHOW COLUMNS FROM orders LIKE 'package_id'");
 if ($checkPackageIdColumn->num_rows == 0) {
-    $conn->query("ALTER TABLE orders ADD COLUMN package_id INT(11) NULL AFTER special_instructions, ADD FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE SET NULL");
+    if ($environment === 'local') {
+        // Local development with foreign key
+        $conn->query("ALTER TABLE orders ADD COLUMN package_id INT(11) NULL AFTER special_instructions, ADD FOREIGN KEY (package_id) REFERENCES packages(id) ON DELETE SET NULL");
+    } else {
+        // Production (InfinityFree) without foreign key
+        $conn->query("ALTER TABLE orders ADD COLUMN package_id INT(11) NULL AFTER special_instructions");
+    }
 }
 
 // Insert default services
@@ -224,10 +335,22 @@ if ($inventoryCount == 0) {
 
 // Function to sanitize input data
 function sanitize_input($data) {
+    global $conn;
     $data = trim($data);
     $data = stripslashes($data);
     $data = htmlspecialchars($data);
-    return $data;
+    return $conn->real_escape_string($data);
+}
+
+// Environment-specific settings
+if (ENVIRONMENT === 'development') {
+    // Development settings
+    error_reporting(E_ALL);
+    ini_set('display_errors', 1);
+} else {
+    // Production settings
+    error_reporting(0);
+    ini_set('display_errors', 0);
 }
 
 // Start session if not already started
