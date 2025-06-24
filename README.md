@@ -282,70 +282,129 @@ The following Entity Relationship diagram represents the database structure for 
 
 ```mermaid
 erDiagram
-    USER ||--o{ ORDER : places
-    USER {
+    USERS ||--o{ ORDERS : places
+    USERS {
         int id PK
         string name
-        string email
+        string email UK
         string password
         string phone
-        string address
-        string role
-        datetime created_at
+        text address
+        enum user_role "customer, admin"
+        timestamp created_at
+        timestamp updated_at
     }
-    ORDER ||--|{ ORDER_ITEM : contains
-    ORDER {
+    
+    PACKAGES ||--o{ ORDERS : "can be ordered as"
+    PACKAGES {
+        int id PK
+        string name
+        string code UK
+        text description
+        decimal price
+        int max_garments
+        int num_deliveries
+        text includes_services
+        tinyint active
+        timestamp created_at
+        timestamp updated_at
+    }
+    
+    ORDERS ||--|{ ORDER_ITEMS : contains
+    ORDERS {
         int id PK
         int user_id FK
-        datetime order_date
-        string status
-        datetime pickup_time
-        datetime delivery_time
-        float total_amount
-        string payment_method
-        string payment_status
-        string notes
+        decimal total_amount
+        enum status "pending, processing, completed, cancelled"
+        enum payment_status "pending, paid, refunded"
+        enum payment_method "cash, online"
+        date pickup_date
+        time pickup_time
+        text pickup_address
+        datetime delivery_date
+        text special_instructions
+        int package_id FK
+        timestamp created_at
+        timestamp updated_at
     }
-    ORDER_ITEM {
+    
+    ORDER_ITEMS {
         int id PK
         int order_id FK
         int service_id FK
         int quantity
-        float price
-        string description
+        decimal price
+        timestamp created_at
     }
-    SERVICE ||--o{ ORDER_ITEM : "ordered in"
-    SERVICE {
+    
+    SERVICES ||--o{ ORDER_ITEMS : "ordered in"
+    SERVICES {
         int id PK
         string name
-        string description
-        float price
-        string category
+        text description
+        decimal price
         string image
-        boolean active
+        tinyint active
+        timestamp created_at
+        timestamp updated_at
     }
-    USER ||--o{ FEEDBACK : submits
-    FEEDBACK {
+    
+    USERS ||--o{ FEEDBACKS : submits
+    FEEDBACKS {
         int id PK
         int user_id FK
         int order_id FK
-        int rating
-        string comment
-        datetime created_at
+        int rating "1-5 stars"
+        text comment
+        timestamp created_at
     }
-    ORDER ||--o{ FEEDBACK : receives
-    INVENTORY ||--o{ SERVICE : "used by"
+    
+    ORDERS ||--o{ FEEDBACKS : receives
+    
     INVENTORY {
         int id PK
         string name
-        string description
-        int quantity
-        float cost
-        string supplier
+        text description
+        int current_stock
         int min_stock_level
-        datetime last_restocked
+        string unit
+        string supplier
+        decimal cost_per_unit
+        timestamp created_at
+        timestamp updated_at
     }
+    
+    INVENTORY ||--o{ INVENTORY_LOG : tracks
+    INVENTORY_LOG {
+        int id PK
+        int inventory_id FK
+        int adjustment
+        string reason
+        int admin_id FK
+        timestamp created_at
+    }
+    
+    USERS ||--o{ INVENTORY_LOG : "administered by"
 ```
+
+### Key Database Tables
+
+**Core Tables:**
+- **USERS**: Customer and admin account management with role-based access
+- **ORDERS**: Order management with status tracking and delivery scheduling
+- **ORDER_ITEMS**: Individual service items within orders
+- **SERVICES**: Available laundry services and pricing
+- **PACKAGES**: Pre-defined service packages with bulk pricing
+- **FEEDBACKS**: Customer reviews and ratings system
+- **INVENTORY**: Supply and stock management
+- **INVENTORY_LOG**: Track inventory changes and adjustments
+
+**Key Features:**
+- **Smart Environment Adaptation**: Foreign key constraints automatically managed based on hosting environment
+- **Package System**: Customers can choose individual services or pre-packaged deals
+- **Comprehensive Tracking**: Full audit trail for orders, inventory, and user actions
+- **Flexible Payment**: Support for cash and online payment methods
+- **Rating System**: Customer feedback collection for service quality improvement
 
 ## License
 
