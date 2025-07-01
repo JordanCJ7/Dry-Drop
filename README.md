@@ -491,3 +491,4 @@ Built with ❤️ for seamless deployment across all hosting environments.
 | **Shared** | $3-15/month | Small Business | BlueHost, SiteGround |
 | **VPS** | $5-50/month | Growing Business | DigitalOcean, Linode |
 | **Cloud** | $10-100/month | Enterprise | AWS, Google Cloud |
+
