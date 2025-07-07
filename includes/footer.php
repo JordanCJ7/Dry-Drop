@@ -1,4 +1,4 @@
-    </div>
+</div>
     <!-- Footer -->
     <footer class="bg-dark text-white py-4 mt-4">
         <div class="container">
@@ -19,8 +19,8 @@
                 <div class="col-md-4">
                     <h5>Contact Us</h5>
                     <address>
-                        <p><i class="fas fa-map-marker-alt me-2"></i> 123 Laundry Street, City</p>
-                        <p><i class="fas fa-phone me-2"></i> +1 234 567 8900</p>
+                        <p><i class="fas fa-map-marker-alt me-2"></i> No. 45, Galle Road<br>Colombo 03<br>Sri Lanka</p>
+                        <p><i class="fas fa-phone me-2"></i> +94771234567, +94712345678</p>
                         <p><i class="fas fa-envelope me-2"></i> info@drydrop.com</p>
                     </address>
                 </div>
