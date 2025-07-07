@@ -93,93 +93,61 @@ if ($result->num_rows > 0) {
     <div class="container">        <h2 class="text-center mb-4">What Our Customers Say</h2>
         <div class="row">
             <?php
-            // Fetch recent feedbacks
-            $sql = "SELECT f.*, u.name FROM feedbacks f 
-                    JOIN users u ON f.user_id = u.id 
-                    ORDER BY f.created_at DESC LIMIT 3";
-            $result = $conn->query($sql);
-            
-            if ($result->num_rows > 0) {
-                while ($feedback = $result->fetch_assoc()) {
-                    ?>                    <div class="col-md-4 mb-4">
-                        <div class="card testimonial-card h-100">
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <?php
-                                    // Display star rating
-                                    for ($i = 1; $i <= 5; $i++) {
-                                        if ($i <= $feedback['rating']) {
-                                            echo '<i class="fas fa-star text-warning"></i>';
-                                        } else {
-                                            echo '<i class="far fa-star text-warning"></i>';
-                                        }
+            // Always display dummy testimonials
+            $dummyTestimonials = [
+                [
+                    'name' => 'Ashan Perera',
+                    'comment' => 'Excellent service! My clothes have never been this clean. Will use again.',
+                    'rating' => 5
+                ],
+                [
+                    'name' => 'Nadeeka Fernando',
+                    'comment' => 'Very fast pickup and delivery. The quality of cleaning is top-notch.',
+                    'rating' => 4
+                ],
+                [
+                    'name' => 'Chaminda Jayasinghe',
+                    'comment' => 'Very professional service. The online ordering system is super easy!',
+                    'rating' => 5
+                ],
+                [
+                    'name' => 'Dilani Silva',
+                    'comment' => 'Affordable prices and friendly staff. Highly recommended!',
+                    'rating' => 5
+                ],
+                [
+                    'name' => 'Ruwan Gunasekara',
+                    'comment' => 'Quick turnaround and my clothes smell amazing.',
+                    'rating' => 4
+                ],
+                [
+                    'name' => 'Sajith Weerasinghe',
+                    'comment' => 'Convenient and reliable. I appreciate the attention to detail.',
+                    'rating' => 4
+                ]
+            ];
+            foreach ($dummyTestimonials as $testimonial) {
+                ?>                    <div class="col-md-4 mb-4">
+                    <div class="card testimonial-card h-100">
+                        <div class="card-body">
+                            <div class="mb-3">
+                                <?php
+                                // Display star rating
+                                for ($i = 1; $i <= 5; $i++) {
+                                    if ($i <= $testimonial['rating']) {
+                                        echo '<i class="fas fa-star text-warning"></i>';
+                                    } else {
+                                        echo '<i class="far fa-star text-warning"></i>';
                                     }
-                                    ?>
-                                </div>                                
-                                <p class="card-text">"<?php echo htmlspecialchars($feedback['comment']); ?>"</p>
-                                <p class="card-text text-end fw-bold">- <?php echo htmlspecialchars($feedback['name']); ?></p>
+                                }
+                                ?>
                             </div>
+                            <p class="card-text">"<?php echo $testimonial['comment']; ?>"</p>
+                            <p class="card-text text-end fw-bold">- <?php echo $testimonial['name']; ?></p>
                         </div>
                     </div>
-                    <?php
-                }
-            } else {
-                // Display dummy testimonials if no real ones exist
-                $dummyTestimonials = [
-                    [
-                        'name' => 'Ashan Perera',
-                        'comment' => 'Excellent service! My clothes have never been this clean. Will use again.',
-                        'rating' => 5
-                    ],
-                    [
-                        'name' => 'Nadeeka Fernando',
-                        'comment' => 'Very fast pickup and delivery. The quality of cleaning is top-notch.',
-                        'rating' => 4
-                    ],
-                    [
-                        'name' => 'Chaminda Jayasinghe',
-                        'comment' => 'Very professional service. The online ordering system is super easy!',
-                        'rating' => 5
-                    ],
-                    [
-                        'name' => 'Dilani Silva',
-                        'comment' => 'Affordable prices and friendly staff. Highly recommended!',
-                        'rating' => 5
-                    ],
-                    [
-                        'name' => 'Ruwan Gunasekara',
-                        'comment' => 'Quick turnaround and my clothes smell amazing.',
-                        'rating' => 4
-                    ],
-                    [
-                        'name' => 'Sajith Weerasinghe',
-                        'comment' => 'Convenient and reliable. I appreciate the attention to detail.',
-                        'rating' => 4
-                    ]
-                ];
-                foreach ($dummyTestimonials as $testimonial) {
-                    ?>                    <div class="col-md-4 mb-4">
-                        <div class="card testimonial-card h-100">
-                            <div class="card-body">
-                                <div class="mb-3">
-                                    <?php
-                                    // Display star rating
-                                    for ($i = 1; $i <= 5; $i++) {
-                                        if ($i <= $testimonial['rating']) {
-                                            echo '<i class="fas fa-star text-warning"></i>';
-                                        } else {
-                                            echo '<i class="far fa-star text-warning"></i>';
-                                        }
-                                    }
-                                    ?>
-                                </div>
-                                <p class="card-text">"<?php echo $testimonial['comment']; ?>"</p>
-                                <p class="card-text text-end fw-bold">- <?php echo $testimonial['name']; ?></p>
-                            </div>
-                        </div>
-                    </div>
-                    <?php
-                }
+                </div>
+                <?php
             }
             ?>
         </div>
