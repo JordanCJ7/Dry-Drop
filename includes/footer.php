@@ -19,7 +19,7 @@
                 <div class="col-md-4">
                     <h5>Contact Us</h5>
                     <address>
-                        <p><i class="fas fa-map-marker-alt me-2"></i> No. 45, Galle Road<br>Colombo 03<br>Sri Lanka</p>
+                        <p><i class="fas fa-map-marker-alt me-2"></i> No. 45, Galle Road, Colombo 03, Sri Lanka</p>
                         <p><i class="fas fa-phone me-2"></i> +94771234567, +94712345678</p>
                         <p><i class="fas fa-envelope me-2"></i> info@drydrop.com</p>
                     </address>

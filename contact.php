@@ -96,7 +96,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['contact_submit'])) {
             <div class="card mb-4">
                 <div class="card-body">
                     <h5 class="card-title"><i class="fas fa-phone text-primary me-2"></i> Phone</h5>
-                    <p class="card-text">Customer Service: (123) 456-7890<br>Support: (123) 456-7891</p>
+                    <p class="card-text">Customer Service: (+94) 71 234-5678<br>Support: (+94) 77 123-4567</p>
                 </div>
             </div>
             
