@@ -15,14 +15,14 @@ $user_result = $conn->query($user_sql);
 $user_stats = $user_result->fetch_assoc();
 $stats['users'] = $user_stats;
 
-// Total orders
+// Total orders (exclude cancelled from revenue)
 $order_sql = "SELECT 
                 COUNT(*) as total_orders,
                 SUM(CASE WHEN status = 'pending' THEN 1 ELSE 0 END) as pending_orders,
                 SUM(CASE WHEN status = 'processing' THEN 1 ELSE 0 END) as processing_orders,
                 SUM(CASE WHEN status = 'completed' THEN 1 ELSE 0 END) as completed_orders,
                 SUM(CASE WHEN status = 'cancelled' THEN 1 ELSE 0 END) as cancelled_orders,
-                SUM(total_amount) as total_revenue
+                SUM(CASE WHEN status != 'cancelled' THEN total_amount ELSE 0 END) as total_revenue
             FROM orders";
 $order_result = $conn->query($order_sql);
 $order_stats = $order_result->fetch_assoc();
