@@ -144,6 +144,44 @@ if (other) → Custom production settings
 └── Same codebase works everywhere
 ```
 
+### How to Redeploy (Continuous Updates)
+
+**Recommended workflow for updating your live site after making changes:**
+
+1. **Develop Locally:**
+   - Make code or database changes on your local machine (XAMPP/WAMP/MAMP).
+   - Test thoroughly to ensure everything works as expected.
+
+2. **Export Database (if schema/data changed):**
+   - If you changed the database structure or need to update live data, use:
+     - `deploy/export_database_infinityfree.php` for InfinityFree (removes foreign keys)
+     - `deploy/export_database.php` for other hosts
+   - Download the exported SQL file.
+
+3. **Package Files for Deployment:**
+   - Run `deploy/create-package.bat` to create a fresh deployment package with your latest code.
+   - This ensures only the necessary files are included and ready for upload.
+
+4. **Upload to Hosting:**
+   - Use the InfinityFree File Manager or FTP to upload the new/changed files to your `htdocs` directory.
+   - Overwrite existing files as needed.
+
+5. **Update Database (if needed):**
+   - Use the InfinityFree phpMyAdmin to import your new SQL file if you exported one.
+   - For minor data changes, you can also use phpMyAdmin directly.
+
+6. **Verify Live Site:**
+   - Visit your live domain (e.g., `https://drydrop.infinityfreeapp.com/`) and test the updated features.
+   - Check for errors or missing files.
+
+**Tips for Smooth Redeployment:**
+- Always back up your live database before importing new data.
+- Use the deployment package to avoid uploading unnecessary files.
+- For frequent updates, keep a changelog and only upload changed files if possible.
+- If you use a paid host with SSH/FTP automation, you can script these steps for faster redeployment.
+
+> **Note:** InfinityFree and most free hosts do not support automated CI/CD. All redeployment steps are manual, but the provided tools make the process fast and repeatable.
+
 ### **Deployment Tools Included**
 
 **Database Export Tool:**
