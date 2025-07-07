@@ -425,7 +425,7 @@ This project is open-source and available for personal and commercial use.
 
 ## Contributors
 
-Built with ❤️ for seamless deployment across all hosting environments.
+Built by Janitha Gamage for seamless deployment across all hosting environments.
 
 **Key Features:**
 - Zero-config deployment
